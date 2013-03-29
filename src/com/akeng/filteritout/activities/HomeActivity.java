@@ -2,6 +2,7 @@ package com.akeng.filteritout.activities;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -130,11 +131,10 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			Fragment fragment = new DummySectionFragment();
+  			Fragment fragment = new WeiboSectionFragment(HomeActivity.this);
 			Bundle args = new Bundle();
-			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+			args.putInt(WeiboSectionFragment.ARG_SECTION_NUMBER, position + 1);
+			
 			fragment.setArguments(args);
 			return fragment;
 		}
@@ -161,27 +161,46 @@ public class HomeActivity extends FragmentActivity implements
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class DummySectionFragment extends Fragment {
+	public static class WeiboSectionFragment extends Fragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
 		 */
 		public static final String ARG_SECTION_NUMBER = "section_number";
+		public static final String ARG_SECTION_TYPE = "section_type";
+		public static final int SECTION_FRIENDS = 1;
+		public static final int SECTION_RECOMMENDS = 2;
+		private Context context;
 
-		public DummySectionFragment() {
+		public WeiboSectionFragment() {
+		}
+		
+		public WeiboSectionFragment(Context context) {
+			this.context=context;
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			// Create a new TextView and set its text to the fragment's section
-			// number argument value.
+
+			getWeiboStatus();
+			
 			//statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, true, new WeiboRequestListener());
 			TextView textView = new TextView(getActivity());
 			textView.setGravity(Gravity.CENTER);
 			textView.setText(Integer.toString(getArguments().getInt(
 					ARG_SECTION_NUMBER)));
 			return textView;
+		}
+		
+		public void getWeiboStatus(){
+			
+			if(getArguments().getInt(ARG_SECTION_NUMBER)==SECTION_FRIENDS){
+				statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, true, new WeiboRequestListener(context));
+			}
+			else if(getArguments().getInt(ARG_SECTION_NUMBER)==SECTION_RECOMMENDS){
+				statusesAPI.publicTimeline(50, 1, false, new WeiboRequestListener(context));
+			}
 		}
 	}
 

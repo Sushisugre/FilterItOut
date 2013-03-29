@@ -4,7 +4,9 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.akeng.filteritout.activities.AuthorizeActivity;
 import com.akeng.filteritout.activities.HomeActivity;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
@@ -23,20 +25,19 @@ public class WeiboRequestListener implements RequestListener {
 
 	@Override
 	public void onComplete(String arg0) {
-		// TODO Auto-generated method stub
+		// TODO parce api response
 		Log.i("Weibo Status", arg0);
 	}
 
 	@Override
 	public void onError(WeiboException arg0) {
-		// TODO Auto-generated method stub
-
+		Log.e("Weibo Status","Fail to get weibo, Status code: "+arg0.getStatusCode());
+		Toast.makeText(context, "获取微博失败："+arg0.getStatusCode(), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onIOException(IOException arg0) {
-		// TODO Auto-generated method stub
-
+		arg0.printStackTrace();
 	}
 
 }
