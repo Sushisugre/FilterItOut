@@ -9,11 +9,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.akeng.filteritout.R;
@@ -183,14 +186,18 @@ public class HomeActivity extends FragmentActivity implements
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 
+			View v = inflater.inflate(R.layout.weibo_section, container, false);
+			ListView statusList=(ListView)v.findViewById(R.id.Msglist);
+	
+			StatusAdapter statusAdapter = new StatusAdapter();
+			
 			getWeiboStatus();
+			statusList.setAdapter(statusAdapter);
+			
 			
 			//statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, true, new WeiboRequestListener());
-			TextView textView = new TextView(getActivity());
-			textView.setGravity(Gravity.CENTER);
-			textView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return textView;
+
+			return v;
 		}
 		
 		public void getWeiboStatus(){
@@ -204,4 +211,76 @@ public class HomeActivity extends FragmentActivity implements
 		}
 	}
 
+	
+	public static class StatusAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return 15;
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			Log.i("Get-View","This is position:" + position); 
+			
+			 if (convertView == null) {
+			        convertView =  View.inflate(parent.getContext(), R.layout.weibo, null);
+//			        bananaView = (ImageView) convertView.findViewById(R.id.banana);
+//			        phoneView = (TextView) convertView.findViewById(R.id.phone);
+//			        convertView.setTag(new ViewHolder(bananaView, phoneView));
+			    } else {
+//			        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+//			        bananaView = viewHolder.bananaView;
+//			        phoneView = viewHolder.phoneView;
+			    }
+
+//			    BananaPhone bananaPhone = getItem(position);
+//			    phoneView.setText(bananaPhone.getPhone());
+//			    bananaView.setImageResource(bananaPhone.getBanana());
+			
+			return convertView;
+		}
+		
+
+	}
+	
+	static class StatusHolder {
+		ImageView userProfileImage;
+		TextView username;
+		TextView statusText;
+		TextView statusTime;
+		ImageView statusImage;
+		
+		public void setUserProfileImage(ImageView userProfileImage) {
+			this.userProfileImage = userProfileImage;
+		}
+		public void setUsername(TextView username) {
+			this.username = username;
+		}
+		public void setStatusText(TextView statusText) {
+			this.statusText = statusText;
+		}
+		public void setStatusTime(TextView statusTime) {
+			this.statusTime = statusTime;
+		}
+		public void setStatusImage(ImageView statusImage) {
+			this.statusImage = statusImage;
+		}
+		
+		
+		}
 }
