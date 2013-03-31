@@ -6,8 +6,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.akeng.filteritout.activities.AuthorizeActivity;
-import com.akeng.filteritout.activities.HomeActivity;
+import com.akeng.filteritout.main.AuthorizeActivity;
+import com.akeng.filteritout.main.HomeActivity;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
 

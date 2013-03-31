@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.akeng.filteritout.data.UserInfo;
+import com.akeng.filteritout.entity.UserInfo;
 
 public class SqliteHelper extends SQLiteOpenHelper {
 

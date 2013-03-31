@@ -13,7 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.akeng.filteritout.data.UserInfo;
+import com.akeng.filteritout.entity.UserInfo;
 
 public class DataHelper {
 	 private static String DB_NAME = "mysinaweibo.db";

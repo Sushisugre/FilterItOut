@@ -1,9 +1,7 @@
 package com.akeng.filteritout.util;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.akeng.filteritout.activities.AuthorizeActivity;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
