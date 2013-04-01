@@ -1,5 +1,7 @@
 package com.akeng.filteritout.main;
 
+import java.util.List;
+
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -20,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.akeng.filteritout.R;
+import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.listener.WeiboRequestListener;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.AndroidHelper;
@@ -37,12 +40,14 @@ public class HomeActivity extends FragmentActivity implements
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
+	
+	private static List<Status> statusList;
 	
 	private static StatusesAPI statusesAPI;
 
@@ -222,14 +227,13 @@ public class HomeActivity extends FragmentActivity implements
 
 		@Override
 		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
+			//TODO how to use this?
+			return statusList.get(arg0);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
+			return Long.parseLong(statusList.get(position).getUserId());
 		}
 
 		@Override
