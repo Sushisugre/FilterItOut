@@ -1,7 +1,5 @@
 package com.akeng.filteritout.main;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,9 +8,7 @@ import android.view.Menu;
 import android.view.View;
 
 import com.akeng.filteritout.R;
-import com.akeng.filteritout.entity.UserInfo;
 import com.akeng.filteritout.util.AndroidHelper;
-import com.akeng.filteritout.util.DataHelper;
 
 public class MainActivity extends FragmentActivity{
 

@@ -26,10 +26,12 @@ public class OAuth2 {
     
     public OAuth2(Context context){
     	//OAuth2(context,WeiboAuthListener listener);
+    	this.context=context;
     }
     
     public void requestAccessToken(){
-        mWeibo.authorize(context, listener);
+    	if(listener!=null)
+    		mWeibo.authorize(context, listener);
     }
     
     public void refreshAccessToken(){
@@ -37,8 +39,6 @@ public class OAuth2 {
     }
     
     public static void storeAccessToken(String userId,Oauth2AccessToken accessToken){
-    	//OAuth2.accessToken = accessToken;
-    	//OAuth2.userId = userId;
     	AccessTokenKeeper.keepAccessToken(context,accessToken,userId);
     }
     

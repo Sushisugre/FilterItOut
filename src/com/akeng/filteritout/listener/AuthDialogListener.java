@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.akeng.filteritout.main.AuthorizeActivity;
 import com.akeng.filteritout.main.HomeActivity;
 import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.Oauth2AccessToken;
@@ -13,7 +12,7 @@ import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.WeiboDialogError;
 import com.weibo.sdk.android.WeiboException;
 
-class AuthDialogListener implements WeiboAuthListener {
+public class AuthDialogListener implements WeiboAuthListener {
 	
 	private Context context;
 	
@@ -27,7 +26,7 @@ class AuthDialogListener implements WeiboAuthListener {
         String expires_in = values.getString("expires_in");
         String user_id=values.getString("uid");
         Oauth2AccessToken accessToken = new Oauth2AccessToken(token, expires_in);
-        if (AuthorizeActivity.accessToken.isSessionValid()) {            	
+        if (accessToken.isSessionValid()) {            	
         	OAuth2.storeAccessToken(user_id, accessToken);
 
         	Toast.makeText(context, "认证成功", Toast.LENGTH_SHORT)
