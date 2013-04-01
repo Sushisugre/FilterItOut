@@ -26,6 +26,7 @@ import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.listener.WeiboRequestListener;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.AndroidHelper;
+import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.api.StatusesAPI;
 import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
 
@@ -46,10 +47,14 @@ public class HomeActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	private ViewPager mViewPager;
+	public static List<Status> friendStatusList;
+	public static List<Status> publicStatusList;
+	private static OAuth2 oauth;
 	
-	private static List<Status> statusList;
-	
-	private static StatusesAPI statusesAPI;
+	public static final String ARG_SECTION_NUMBER = "section_number";
+	public static final String ARG_SECTION_TYPE = "section_type";
+	public static final int SECTION_FRIENDS = 0;
+	public static final int SECTION_RECOMMENDS = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +65,11 @@ public class HomeActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_home);
 		
 		View layout=findViewById(R.id.pager);
-		AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
+		//AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
+		layout.setBackgroundResource(R.drawable.app_bg_v);
 		
 		//
-		statusesAPI=new StatusesAPI(AccessTokenKeeper.readAccessToken(this));
+		oauth=new OAuth2(HomeActivity.this);
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
@@ -114,6 +120,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
+		requestStatus();
 	}
 
 	@Override
@@ -124,6 +131,17 @@ public class HomeActivity extends FragmentActivity implements
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+	}
+	
+	
+	public void requestStatus(){
+		
+		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
+			oauth.requestFriendStatus();
+		}
+		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
+			oauth.requestPublicStatus();
+		}
 	}
 
 	/**
@@ -139,9 +157,9 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-  			Fragment fragment = new WeiboSectionFragment(HomeActivity.this);
+  			Fragment fragment = new WeiboSectionFragment();
 			Bundle args = new Bundle();
-			args.putInt(WeiboSectionFragment.ARG_SECTION_NUMBER, position + 1);
+			args.putInt(ARG_SECTION_NUMBER, position + 1);
 			
 			fragment.setArguments(args);
 			return fragment;
@@ -174,18 +192,11 @@ public class HomeActivity extends FragmentActivity implements
 		 * The fragment argument representing the section number for this
 		 * fragment.
 		 */
-		public static final String ARG_SECTION_NUMBER = "section_number";
-		public static final String ARG_SECTION_TYPE = "section_type";
-		public static final int SECTION_FRIENDS = 1;
-		public static final int SECTION_RECOMMENDS = 2;
-		private Context context;
+
 
 		public WeiboSectionFragment() {
 		}
 		
-		public WeiboSectionFragment(Context context) {
-			this.context=context;
-		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -196,24 +207,14 @@ public class HomeActivity extends FragmentActivity implements
 	
 			StatusAdapter statusAdapter = new StatusAdapter();
 			
-			getWeiboStatus();
+			//this.requestStatus();
+			
 			statusList.setAdapter(statusAdapter);
 			
 			
-			//statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, true, new WeiboRequestListener());
-
 			return v;
 		}
 		
-		public void getWeiboStatus(){
-			
-			if(getArguments().getInt(ARG_SECTION_NUMBER)==SECTION_FRIENDS){
-				statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, true, new WeiboRequestListener(context));
-			}
-			else if(getArguments().getInt(ARG_SECTION_NUMBER)==SECTION_RECOMMENDS){
-				statusesAPI.publicTimeline(50, 1, false, new WeiboRequestListener(context));
-			}
-		}
 	}
 
 	
@@ -228,12 +229,12 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		public Object getItem(int arg0) {
 			//TODO how to use this?
-			return statusList.get(arg0);
+			return friendStatusList.get(arg0);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			return Long.parseLong(statusList.get(position).getUserId());
+			return Long.parseLong(friendStatusList.get(position).getUserId());
 		}
 
 		@Override

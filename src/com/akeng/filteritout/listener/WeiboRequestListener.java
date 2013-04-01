@@ -2,29 +2,39 @@ package com.akeng.filteritout.listener;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
+
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.akeng.filteritout.main.HomeActivity;
+import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
 
 public class WeiboRequestListener implements RequestListener {
 	
 	private Context context;
+	private String type;
+
 	
 	public WeiboRequestListener(){
 		
 	}
 	
-	public WeiboRequestListener(Context context){
+	public WeiboRequestListener(Context context,String type){
 		this.context=context;
+		this.type=type;
 	}
 
 	@Override
-	public void onComplete(String arg0) {
-		// TODO parce api response
-		Log.i("Weibo Status", arg0);
+	public void onComplete(String arg0){
+		OAuth2.response=arg0;
+		if(type.equals(OAuth2.FRIEND_STATUS))
+			HomeActivity.friendStatusList=OAuth2.parseResponse();
+		else if(type.equals(OAuth2.PUBLIC_STATUS))
+			HomeActivity.publicStatusList=OAuth2.parseResponse();
 	}
 
 	@Override
