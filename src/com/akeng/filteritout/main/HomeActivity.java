@@ -1,34 +1,22 @@
 package com.akeng.filteritout.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
-import com.akeng.filteritout.listener.WeiboRequestListener;
-import com.akeng.filteritout.util.AccessTokenKeeper;
-import com.akeng.filteritout.util.AndroidHelper;
 import com.akeng.filteritout.util.OAuth2;
-import com.weibo.sdk.android.api.StatusesAPI;
-import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -47,8 +35,8 @@ public class HomeActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	private ViewPager mViewPager;
-	public static List<Status> friendStatusList;
-	public static List<Status> publicStatusList;
+	public static List<Status> friendStatusList=new ArrayList<Status>();
+	public static List<Status> publicStatusList=new ArrayList<Status>();
 	private static OAuth2 oauth;
 	
 	public static final String ARG_SECTION_NUMBER = "section_number";
@@ -105,6 +93,8 @@ public class HomeActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		requestStatus();
 	}
 
 	@Override
@@ -120,7 +110,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-		requestStatus();
+		
 	}
 
 	@Override
@@ -159,7 +149,7 @@ public class HomeActivity extends FragmentActivity implements
 			// getItem is called to instantiate the fragment for the given page.
   			Fragment fragment = new WeiboSectionFragment();
 			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, position + 1);
+			args.putInt(ARG_SECTION_NUMBER, position);
 			
 			fragment.setArguments(args);
 			return fragment;
@@ -183,109 +173,5 @@ public class HomeActivity extends FragmentActivity implements
 		}
 	}
 
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	public static class WeiboSectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
 
-
-		public WeiboSectionFragment() {
-		}
-		
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-
-			View v = inflater.inflate(R.layout.weibo_section, container, false);
-			ListView statusList=(ListView)v.findViewById(R.id.Msglist);
-	
-			StatusAdapter statusAdapter = new StatusAdapter();
-			
-			//this.requestStatus();
-			
-			statusList.setAdapter(statusAdapter);
-			
-			
-			return v;
-		}
-		
-	}
-
-	
-	public static class StatusAdapter extends BaseAdapter {
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 15;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			//TODO how to use this?
-			return friendStatusList.get(arg0);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return Long.parseLong(friendStatusList.get(position).getUserId());
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
-			Log.i("Get-View","This is position:" + position); 
-			
-			 if (convertView == null) {
-			        convertView =  View.inflate(parent.getContext(), R.layout.weibo, null);
-//			        bananaView = (ImageView) convertView.findViewById(R.id.banana);
-//			        phoneView = (TextView) convertView.findViewById(R.id.phone);
-//			        convertView.setTag(new ViewHolder(bananaView, phoneView));
-			    } else {
-//			        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-//			        bananaView = viewHolder.bananaView;
-//			        phoneView = viewHolder.phoneView;
-			    }
-
-//			    BananaPhone bananaPhone = getItem(position);
-//			    phoneView.setText(bananaPhone.getPhone());
-//			    bananaView.setImageResource(bananaPhone.getBanana());
-			
-			return convertView;
-		}
-		
-
-	}
-	
-	static class StatusHolder {
-		ImageView userProfileImage;
-		TextView username;
-		TextView statusText;
-		TextView statusTime;
-		ImageView statusImage;
-		
-		public void setUserProfileImage(ImageView userProfileImage) {
-			this.userProfileImage = userProfileImage;
-		}
-		public void setUsername(TextView username) {
-			this.username = username;
-		}
-		public void setStatusText(TextView statusText) {
-			this.statusText = statusText;
-		}
-		public void setStatusTime(TextView statusTime) {
-			this.statusTime = statusTime;
-		}
-		public void setStatusImage(ImageView statusImage) {
-			this.statusImage = statusImage;
-		}
-		
-		
-		}
 }

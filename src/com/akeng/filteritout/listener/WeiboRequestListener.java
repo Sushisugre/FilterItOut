@@ -31,10 +31,17 @@ public class WeiboRequestListener implements RequestListener {
 	@Override
 	public void onComplete(String arg0){
 		OAuth2.response=arg0;
-		if(type.equals(OAuth2.FRIEND_STATUS))
+		if(type.equals(OAuth2.FRIEND_STATUS)){
 			HomeActivity.friendStatusList=OAuth2.parseResponse();
-		else if(type.equals(OAuth2.PUBLIC_STATUS))
+			Log.e("Status Number", ""+HomeActivity.friendStatusList.size());
+
+		}
+		else if(type.equals(OAuth2.PUBLIC_STATUS)){
 			HomeActivity.publicStatusList=OAuth2.parseResponse();
+			Log.e("Status Number", ""+HomeActivity.publicStatusList.size());
+
+
+		}
 	}
 
 	@Override

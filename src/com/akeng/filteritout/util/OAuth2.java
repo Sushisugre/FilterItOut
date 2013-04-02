@@ -63,11 +63,11 @@ public class OAuth2 {
     }
     
     public void requestFriendStatus(){
-		statusesAPI.friendsTimeline((long)0, (long)0, 50, 1, false, FEATURE.ALL, false, new WeiboRequestListener(context,FRIEND_STATUS));
+		statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, new WeiboRequestListener(context,FRIEND_STATUS));
     }
     
     public void requestPublicStatus(){
-		statusesAPI.publicTimeline(50, 1, false, new WeiboRequestListener(context,PUBLIC_STATUS));
+		statusesAPI.publicTimeline(15, 1, false, new WeiboRequestListener(context,PUBLIC_STATUS));
 
     }
     
