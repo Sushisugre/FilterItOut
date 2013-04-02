@@ -35,6 +35,9 @@ public class HomeActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	private ViewPager mViewPager;
+	private WeiboSectionFragment friendSection;
+	private WeiboSectionFragment recommendSection;
+
 	public static List<Status> friendStatusList=new ArrayList<Status>();
 	public static List<Status> publicStatusList=new ArrayList<Status>();
 	private static OAuth2 oauth;
@@ -56,10 +59,8 @@ public class HomeActivity extends FragmentActivity implements
 		//AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
 		layout.setBackgroundResource(R.drawable.app_bg_v);
 		
-		//
 		oauth=new OAuth2(HomeActivity.this);
-
-		// Set up the action bar.
+		
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -71,7 +72,7 @@ public class HomeActivity extends FragmentActivity implements
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+		
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
@@ -85,16 +86,15 @@ public class HomeActivity extends FragmentActivity implements
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
+			//  Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+
 		
-		requestStatus();
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-		
+		 requestStatus();
 	}
 
 	@Override
@@ -127,11 +127,16 @@ public class HomeActivity extends FragmentActivity implements
 	public void requestStatus(){
 		
 		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			oauth.requestFriendStatus();
+			oauth.requestFriendStatus(mSectionsPagerAdapter.getItem(SECTION_FRIENDS));
 		}
 		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
-			oauth.requestPublicStatus();
+			oauth.requestPublicStatus(mSectionsPagerAdapter.getItem(SECTION_RECOMMENDS));
+
 		}
+	}
+	
+	public void updateSection(){
+		//mSectionsPagerAdapter.
 	}
 
 	/**
@@ -145,12 +150,11 @@ public class HomeActivity extends FragmentActivity implements
 		}
 
 		@Override
-		public Fragment getItem(int position) {
+		public WeiboSectionFragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-  			Fragment fragment = new WeiboSectionFragment();
+			WeiboSectionFragment fragment = new WeiboSectionFragment();
 			Bundle args = new Bundle();
 			args.putInt(ARG_SECTION_NUMBER, position);
-			
 			fragment.setArguments(args);
 			return fragment;
 		}
@@ -165,9 +169,9 @@ public class HomeActivity extends FragmentActivity implements
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getString(R.string.title_section1).toUpperCase();
+				return getString(R.string.title_section_attention).toUpperCase();
 			case 1:
-				return getString(R.string.title_section2).toUpperCase();
+				return getString(R.string.title_section_recommend).toUpperCase();
 			}
 			return null;
 		}

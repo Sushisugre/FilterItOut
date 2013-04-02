@@ -1,7 +1,6 @@
 package com.akeng.filteritout.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -13,12 +12,12 @@ import android.util.Log;
 
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.listener.AuthDialogListener;
-import com.akeng.filteritout.listener.WeiboRequestListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.api.StatusesAPI;
 import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
+import com.weibo.sdk.android.net.RequestListener;
 
 public class OAuth2 {
 	
@@ -62,13 +61,15 @@ public class OAuth2 {
     	AccessTokenKeeper.keepAccessToken(context,accessToken,userId);
     }
     
-    public void requestFriendStatus(){
-		statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, new WeiboRequestListener(context,FRIEND_STATUS));
+    public void requestFriendStatus(RequestListener listener){
+		//statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, new WeiboRequestListener(context,FRIEND_STATUS));
+		statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, listener);
+
     }
     
-    public void requestPublicStatus(){
-		statusesAPI.publicTimeline(15, 1, false, new WeiboRequestListener(context,PUBLIC_STATUS));
-
+    public void requestPublicStatus(RequestListener listener){
+		//statusesAPI.publicTimeline(15, 1, false, new WeiboRequestListener(context,PUBLIC_STATUS));
+		statusesAPI.publicTimeline(15, 1, false, listener);
     }
     
     public static List<Status> parseResponse(){

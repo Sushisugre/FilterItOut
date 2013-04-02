@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">FilterItOut</string>
-    <string name="title_section2">猜你喜欢</string>
-    <string name="title_section1">关注微博</string>
+    <string name="title_section_recommend">猜你喜欢</string>
+    <string name="title_section_attention">关注微博</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_launch">LaunchActivity</string>
