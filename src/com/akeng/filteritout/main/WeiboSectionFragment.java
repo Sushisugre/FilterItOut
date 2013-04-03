@@ -1,11 +1,9 @@
 package com.akeng.filteritout.main;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,15 +14,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
-import com.akeng.filteritout.util.OAuth2;
-import com.weibo.sdk.android.WeiboException;
-import com.weibo.sdk.android.net.RequestListener;
 
-public class WeiboSectionFragment extends Fragment implements RequestListener {
+
+public class WeiboSectionFragment extends Fragment{
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -57,7 +52,6 @@ public class WeiboSectionFragment extends Fragment implements RequestListener {
 	        }
 	        super.onActivityCreated(savedInstanceState);
 	        
-	        onUpdateContent();
 	    }
 	 
 	private static String makeFragmentName(int viewId, int index) {
@@ -74,7 +68,9 @@ public class WeiboSectionFragment extends Fragment implements RequestListener {
 			getActivity().runOnUiThread(new Runnable() {
 				
 			     public void run() {
-						ListView statusList = (ListView) getActivity().findViewById(R.id.Msglist);	
+						ListView statusList = (ListView) getActivity().getSupportFragmentManager()
+								.findFragmentByTag(makeFragmentName(R.id.pager,section)).
+								getView().findViewById(R.id.Msglist);	
 						statusList.invalidateViews();
 
 			    }
@@ -89,41 +85,30 @@ public class WeiboSectionFragment extends Fragment implements RequestListener {
 
 	}
 	
-	@Override
-	public void onComplete(String arg0){
-		OAuth2.response=arg0;
-
-		statusList.addAll(OAuth2.parseResponse());
-		onUpdateContent();
-		Log.e("Status Number", ""+statusList.size());
-
-	}
-
-	@Override
-	public void onError(WeiboException arg0) {
-		Log.e("Weibo Status","Fail to get weibo, Status code: "+arg0.getStatusCode());
-		Toast.makeText(getActivity(), "获取微博失败："+arg0.getStatusCode(), Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onIOException(IOException arg0) {
-		arg0.printStackTrace();
-	}
 
 	public class StatusAdapter extends BaseAdapter {
 
-
+		private int type;
 		public StatusAdapter(int type) {
+			this.type=type;
+		Log.e("Create Status Adapter", "---Create Adapter---");
 
 		}
 
 		@Override
 		public int getCount() {
+			Log.e("Get Count", "View Count: "+statusList.size());
+			if(type==HomeActivity.SECTION_FRIENDS)
+				statusList=HomeActivity.friendStatusList;
+			if(type==HomeActivity.SECTION_RECOMMENDS)
+				statusList=HomeActivity.publicStatusList;
+
 			return statusList.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
+
 			return statusList.get(arg0);
 		}
 

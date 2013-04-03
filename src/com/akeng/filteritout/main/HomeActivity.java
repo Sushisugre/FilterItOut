@@ -1,5 +1,6 @@
 package com.akeng.filteritout.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +14,17 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.util.OAuth2;
+import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.net.RequestListener;
 
 public class HomeActivity extends FragmentActivity implements
-		ActionBar.TabListener {
+		ActionBar.TabListener,RequestListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -123,20 +128,73 @@ public class HomeActivity extends FragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 	}
 	
+	@Override
+	public void onComplete(String arg0){
+		OAuth2.response=arg0;
+		int section=mViewPager.getCurrentItem();
+		if(section==SECTION_FRIENDS){
+			friendStatusList.addAll(OAuth2.parseResponse());
+			Log.e("Status Number", ""+friendStatusList.size());
+
+		}
+		else if(section==SECTION_RECOMMENDS){
+			publicStatusList.addAll(OAuth2.parseResponse());
+			Log.e("Status Number", ""+publicStatusList.size());
+
+		}
+		
+		updateSection(section);
+	}
+
+	@Override
+	public void onError(WeiboException arg0) {
+		Log.e("Weibo Status","Fail to get weibo, Status code: "+arg0.getStatusCode());
+		Toast.makeText(this, "获取微博失败："+arg0.getStatusCode(), Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onIOException(IOException arg0) {
+		arg0.printStackTrace();
+	}
+	
+	private static String makeFragmentName(int viewId, int index) {
+		return "android:switcher:" + viewId + ":" + index;
+	}
+	
 	
 	public void requestStatus(){
+		int index=mViewPager.getCurrentItem();
+		String tag=makeFragmentName(R.id.pager,index);
 		
 		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			oauth.requestFriendStatus(mSectionsPagerAdapter.getItem(SECTION_FRIENDS));
+			//oauth.requestFriendStatus(getFragment(SECTION_FRIENDS));
+			oauth.requestFriendStatus(this);
 		}
 		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
-			oauth.requestPublicStatus(mSectionsPagerAdapter.getItem(SECTION_RECOMMENDS));
-
+			//oauth.requestPublicStatus(getFragment(SECTION_RECOMMENDS));
+			oauth.requestPublicStatus(this);
 		}
 	}
 	
-	public void updateSection(){
-		//mSectionsPagerAdapter.
+	public void updateSection(final int section){
+		Log.e("Update-List", "--------Test Update Section-------");
+//			Log.e("Section number", "Section: "+section);
+//			Log.e("Fragment tag", "Frament Tag: "+this.getTag());
+//			Log.e("Maked Tag","Maked Tag: "+makeFragmentName(R.id.pager,section));
+			this.runOnUiThread(new Runnable() {
+				
+			     public void run() {
+						ListView statusList = (ListView) 
+								getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section)).
+								getView().findViewById(R.id.Msglist);	
+						statusList.invalidateViews();
+
+			    }
+			});
+			
+
+//		}
+
 	}
 
 	/**
@@ -152,12 +210,12 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		public WeiboSectionFragment getItem(int position) {
 			Log.e("Frament Adapter", "---get Item------");
-			if(position==SECTION_FRIENDS)
-				return friendSection;
-			if(position==SECTION_RECOMMENDS)
-				return recommendSection;
 			
-			return null;
+			WeiboSectionFragment fragment = new WeiboSectionFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, position);
+			fragment.setArguments(args);
+			return fragment;
 		}
 
 		@Override
