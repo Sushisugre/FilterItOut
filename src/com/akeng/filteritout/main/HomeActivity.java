@@ -6,11 +6,11 @@ import java.util.List;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -30,13 +30,9 @@ public class HomeActivity extends FragmentActivity implements
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	private SectionsPagerAdapter mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
 	private ViewPager mViewPager;
-	private WeiboSectionFragment friendSection;
-	private WeiboSectionFragment recommendSection;
+	public WeiboSectionFragment friendSection;
+	public WeiboSectionFragment recommendSection;
 
 	public static List<Status> friendStatusList=new ArrayList<Status>();
 	public static List<Status> publicStatusList=new ArrayList<Status>();
@@ -66,8 +62,17 @@ public class HomeActivity extends FragmentActivity implements
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
+		Bundle args1 = new Bundle();
+		friendSection = new WeiboSectionFragment();
+		args1.putInt(ARG_SECTION_NUMBER, SECTION_FRIENDS);
+		friendSection.setArguments(args1);
+		recommendSection = new WeiboSectionFragment();
+		Bundle args2 = new Bundle();
+		args2.putInt(ARG_SECTION_NUMBER, SECTION_RECOMMENDS);
+		recommendSection.setArguments(args2);
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		
+		
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -76,8 +81,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						actionBar.setSelectedNavigationItem(position);
@@ -86,9 +90,6 @@ public class HomeActivity extends FragmentActivity implements
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			//  Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
@@ -99,7 +100,6 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_home, menu);
 		return true;
 	}
@@ -151,12 +151,13 @@ public class HomeActivity extends FragmentActivity implements
 
 		@Override
 		public WeiboSectionFragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			WeiboSectionFragment fragment = new WeiboSectionFragment();
-			Bundle args = new Bundle();
-			args.putInt(ARG_SECTION_NUMBER, position);
-			fragment.setArguments(args);
-			return fragment;
+			Log.e("Frament Adapter", "---get Item------");
+			if(position==SECTION_FRIENDS)
+				return friendSection;
+			if(position==SECTION_RECOMMENDS)
+				return recommendSection;
+			
+			return null;
 		}
 
 		@Override
