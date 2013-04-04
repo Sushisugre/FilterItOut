@@ -14,7 +14,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.akeng.filteritout.R;
@@ -163,15 +162,11 @@ public class HomeActivity extends FragmentActivity implements
 	
 	
 	public void requestStatus(){
-		int index=mViewPager.getCurrentItem();
-		String tag=makeFragmentName(R.id.pager,index);
 		
 		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			//oauth.requestFriendStatus(getFragment(SECTION_FRIENDS));
 			oauth.requestFriendStatus(this);
 		}
 		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
-			//oauth.requestPublicStatus(getFragment(SECTION_RECOMMENDS));
 			oauth.requestPublicStatus(this);
 		}
 	}
@@ -184,16 +179,15 @@ public class HomeActivity extends FragmentActivity implements
 			this.runOnUiThread(new Runnable() {
 				
 			     public void run() {
-						ListView statusList = (ListView) 
-								getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section)).
-								getView().findViewById(R.id.Msglist);	
-						statusList.invalidateViews();
-
+			    	 WeiboSectionFragment frament=(WeiboSectionFragment)getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section));
+					frament.onUpdateContent();
+						
+//			    	 ListView statusList = (ListView) 
+//								getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section)).
+//								getView().findViewById(R.id.Msglist);	
+//						statusList.invalidateViews();
 			    }
 			});
-			
-
-//		}
 
 	}
 

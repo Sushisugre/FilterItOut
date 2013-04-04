@@ -3,7 +3,6 @@ package com.akeng.filteritout.main;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,6 +23,7 @@ public class WeiboSectionFragment extends Fragment{
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private List<Status> statusList;
+	private ListView statusListView;
 	
 	public WeiboSectionFragment() {
 		statusList=new ArrayList<Status>( );
@@ -34,63 +34,37 @@ public class WeiboSectionFragment extends Fragment{
 			Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.weibo_section, container, false);
-		ListView statusList = (ListView) v.findViewById(R.id.Msglist);
+		statusListView = (ListView) v.findViewById(R.id.Msglist);
 		int section = this.getArguments().getInt(
 				HomeActivity.ARG_SECTION_NUMBER);
 		StatusAdapter statusAdapter = new StatusAdapter(section);
-		// this.requestStatus();
-		statusList.setAdapter(statusAdapter);
+		statusListView.setAdapter(statusAdapter);
 
 		return v;
 	}
 	
-	
-	 @Override
-	    public void onActivityCreated(Bundle savedInstanceState) {
-	       
-		 	if(savedInstanceState != null) {
-	        }
-	        super.onActivityCreated(savedInstanceState);
-	        
-	    }
 	 
-	private static String makeFragmentName(int viewId, int index) {
-		return "android:switcher:" + viewId + ":" + index;
-	}
 
 	public void onUpdateContent() {
 		Log.e("Update-List", "--------Test-------");
-		try{
-			final int section = this.getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER);
-			Log.e("Section number", "Section: "+section);
-			Log.e("Fragment tag", "Frament Tag: "+this.getTag());
-			Log.e("Maked Tag","Maked Tag: "+makeFragmentName(R.id.pager,section));
-			getActivity().runOnUiThread(new Runnable() {
-				
-			     public void run() {
-						ListView statusList = (ListView) getActivity().getSupportFragmentManager()
-								.findFragmentByTag(makeFragmentName(R.id.pager,section)).
-								getView().findViewById(R.id.Msglist);	
-						statusList.invalidateViews();
 
-			    }
-			});
-			
+		int section = this.getArguments().getInt(
+				HomeActivity.ARG_SECTION_NUMBER);
 
-		}
-		catch(NullPointerException e){
-			Log.e("Update-List", "--------Activity Not Created Yet-------");
-			return;
-		}
+		if (section == HomeActivity.SECTION_FRIENDS)
+			statusList = HomeActivity.friendStatusList;
+		if (section == HomeActivity.SECTION_RECOMMENDS)
+			statusList = HomeActivity.publicStatusList;
+		
+		StatusAdapter adapter=(StatusAdapter)statusListView.getAdapter();
+				adapter.notifyDataSetChanged();
 
 	}
 	
 
 	public class StatusAdapter extends BaseAdapter {
 
-		private int type;
 		public StatusAdapter(int type) {
-			this.type=type;
 		Log.e("Create Status Adapter", "---Create Adapter---");
 
 		}
@@ -98,11 +72,6 @@ public class WeiboSectionFragment extends Fragment{
 		@Override
 		public int getCount() {
 			Log.e("Get Count", "View Count: "+statusList.size());
-			if(type==HomeActivity.SECTION_FRIENDS)
-				statusList=HomeActivity.friendStatusList;
-			if(type==HomeActivity.SECTION_RECOMMENDS)
-				statusList=HomeActivity.publicStatusList;
-
 			return statusList.size();
 		}
 
