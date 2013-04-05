@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ListView
+    <com.akeng.filteritout.main.WeiboListView
         android:id="@+id/Msglist"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -15,9 +15,9 @@
         android:dividerHeight="2px"
         android:fastScrollEnabled="true"
         android:focusable="true" >
-    </ListView>
+    </com.akeng.filteritout.main.WeiboListView>
 
-    <LinearLayout
+   <!--  <LinearLayout
         android:id="@+id/loadingLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,12 +43,12 @@
             android:textSize="12px" >
         </TextView>
     </LinearLayout>
-
-    <LinearLayout
+ -->
+<!--     <LinearLayout
         android:id="@+id/toolbarLayout"
         android:layout_width="fill_parent"
         android:layout_height="44dip"
         android:layout_alignParentBottom="true" >
-    </LinearLayout>
+    </LinearLayout> -->
 
 </RelativeLayout>

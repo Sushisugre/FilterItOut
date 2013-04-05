@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class WeiboSectionFragment extends Fragment{
 		statusListView = (ListView) v.findViewById(R.id.Msglist);
 		int section = this.getArguments().getInt(
 				HomeActivity.ARG_SECTION_NUMBER);
-		StatusAdapter statusAdapter = new StatusAdapter(section);
+		StatusAdapter statusAdapter = new StatusAdapter();
 		statusListView.setAdapter(statusAdapter);
 
 		return v;
@@ -60,18 +61,16 @@ public class WeiboSectionFragment extends Fragment{
 		if (section == HomeActivity.SECTION_RECOMMENDS)
 			statusList = HomeActivity.publicStatusList;
 		
-		StatusAdapter adapter=(StatusAdapter)statusListView.getAdapter();
+		HeaderViewListAdapter ha = (HeaderViewListAdapter) statusListView.getAdapter();
+		StatusAdapter adapter=(StatusAdapter)ha.getWrappedAdapter();
 				adapter.notifyDataSetChanged();
 
 	}
 	
 
+	//public class StatusAdapter extends BaseAdapter {
 	public class StatusAdapter extends BaseAdapter {
 
-		public StatusAdapter(int type) {
-		Log.e("Create Status Adapter", "---Create Adapter---");
-
-		}
 
 		@Override
 		public int getCount() {

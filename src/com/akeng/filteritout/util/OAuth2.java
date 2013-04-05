@@ -1,6 +1,7 @@
 package com.akeng.filteritout.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class OAuth2 {
 	public static final String TAG = "OAuth2";
 	public static long sinceId=0;
 	public static long maxId=0;
+	public static Date lastUpdated;
     
     public OAuth2(Context context,WeiboAuthListener listener){
     	this.context=context;

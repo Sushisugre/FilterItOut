@@ -9,5 +9,10 @@
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_authorize">AuthorizeActivity</string>
-
+    <string name="last_update">上次更新于：</string>
+    <string name="pull_down_to_update">下拉刷新</string>
+    <string name="release_to_update">松手刷新</string>
+    <string name="more">更多</string>
+    <string name="loading">正在加载</string>
+    
 </resources>
