@@ -164,7 +164,7 @@ public class HomeActivity extends FragmentActivity implements
 	public void requestStatus(){
 		
 		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			oauth.requestFriendStatus(this);
+			oauth.requestEarlierFriendStatus(this);
 		}
 		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
 			oauth.requestPublicStatus(this);

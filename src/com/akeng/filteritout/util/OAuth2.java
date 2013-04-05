@@ -32,6 +32,8 @@ public class OAuth2 {
 	private static StatusesAPI statusesAPI;
 	public static String response;
 	public static final String TAG = "OAuth2";
+	public static long sinceId=0;
+	public static long maxId=0;
     
     public OAuth2(Context context,WeiboAuthListener listener){
     	this.context=context;
@@ -61,14 +63,20 @@ public class OAuth2 {
     	AccessTokenKeeper.keepAccessToken(context,accessToken,userId);
     }
     
+    public void requestNewFriendStatus(RequestListener listener){
+    	statusesAPI.friendsTimeline(sinceId, 0, 15, 1, false, FEATURE.ALL, false, listener);
+    }
+    
+    public void requestEarlierFriendStatus(RequestListener listener){
+    	statusesAPI.friendsTimeline(0, maxId, 15, 1, false, FEATURE.ALL, false, listener);
+    }
+    
     public void requestFriendStatus(RequestListener listener){
-		//statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, new WeiboRequestListener(context,FRIEND_STATUS));
-		statusesAPI.friendsTimeline((long)0, (long)0, 15, 1, false, FEATURE.ALL, false, listener);
+		statusesAPI.friendsTimeline(sinceId, maxId, 15, 1, false, FEATURE.ALL, false, listener);
 
     }
     
     public void requestPublicStatus(RequestListener listener){
-		//statusesAPI.publicTimeline(15, 1, false, new WeiboRequestListener(context,PUBLIC_STATUS));
 		statusesAPI.publicTimeline(15, 1, false, listener);
     }
     
@@ -82,7 +90,7 @@ public class OAuth2 {
         	for(int i=0;i<data.length();i++)
             {
                 JSONObject d=data.getJSONObject(i);
-                Log.i("JSON Object", d.toString());
+               // Log.i("JSON Object", d.toString());
                 if(d!=null){
                 	
                 	if(d.has("advertises")){
@@ -128,8 +136,8 @@ public class OAuth2 {
             	status.setThumbnailPic(obj.getString("thumbnail_pic"));
             	status.setMiddlePic(obj.getString("bmiddle_pic"));
               
-            	Log.e("thumbnail_pic", obj.getString("thumbnail_pic"));
-                Log.e("bmiddle_pic",obj.getString("bmiddle_pic"));
+            	//Log.e("thumbnail_pic", obj.getString("thumbnail_pic"));
+                //Log.e("bmiddle_pic",obj.getString("bmiddle_pic"));
             }
             
             status.setId(obj.getString("id"));
@@ -142,7 +150,8 @@ public class OAuth2 {
             status.setCommentsCount(obj.getInt("comments_count"));
             status.setAttitudesCount(obj.getInt("attitudes_count"));
             
-            Log.e("userIcon", u.getString("profile_image_url"));  
+           // Log.e("userIcon", u.getString("profile_image_url"));  
+          Log.e("Status Test", obj.getString("text"));
 
     	}
     	catch(JSONException e){
