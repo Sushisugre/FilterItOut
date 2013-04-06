@@ -73,9 +73,8 @@ public class OAuth2 {
     	statusesAPI.friendsTimeline(0, maxId, 15, 1, false, FEATURE.ALL, false, listener);
     }
     
-    public void requestFriendStatus(RequestListener listener){
+    public void requestFriendStatus(long sinceId,long maxId,RequestListener listener){
 		statusesAPI.friendsTimeline(sinceId, maxId, 15, 1, false, FEATURE.ALL, false, listener);
-
     }
     
     public void requestPublicStatus(RequestListener listener){

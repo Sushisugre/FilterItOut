@@ -39,6 +39,7 @@ public class WeiboSectionFragment extends Fragment{
 		StatusAdapter statusAdapter = new StatusAdapter();
 		statusListView.setAdapter(statusAdapter);
 		statusListView.setRefreshListener((HomeActivity)getActivity());
+		statusListView.setSection(getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER));
 		return v;
 	}
 	

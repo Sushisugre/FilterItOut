@@ -32,6 +32,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	    private int mHeaderHeight;
 	 
 	    private int mCurrentScrollState;
+	    private int mSection;
 	 
 	    private final static int NONE_PULL_REFRESH = 0;    //正常状态
 	    private final static int ENTER_PULL_REFRESH = 1;   //进入下拉刷新状态
@@ -89,7 +90,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	                    mFooterTextView.setText(R.string.loading);
 	                    mFooterProgressBar.setVisibility(View.VISIBLE);
 	                    if (mRefreshListener != null) {
-	                        mRefreshListener.more();
+	                        mRefreshListener.more(mSection);
 	                    }
 	                }
 	            }
@@ -108,6 +109,9 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	    public void setRefreshListener(RefreshListener mRefreshListener) {
 		this.mRefreshListener = mRefreshListener;
 	}
+	    public void setSection(int section){
+	    	this.mSection=section;
+	    }
 
 		@Override
 	    public boolean onTouchEvent(MotionEvent ev) {
@@ -242,7 +246,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	                new Thread() {
 	                    public void run() {
 	                        if (mRefreshListener != null) {
-	                            mRefreshObject = mRefreshListener.refreshing();
+	                            mRefreshListener.refreshing(mSection);
 	                        }
 	                        Message msg = mHandler.obtainMessage();
 	                        msg.what = REFRESH_DONE;
@@ -285,9 +289,9 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	        }
 	    };
 	    public interface RefreshListener {
-	        Object refreshing();
+	        void refreshing(int section);
 	        void refreshed(Object obj);
-	        void more();
+	        void more(int section);
 	    }
 	 
 	    public void finishFootView() {

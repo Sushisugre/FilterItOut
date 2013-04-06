@@ -68,17 +68,7 @@ public class HomeActivity extends FragmentActivity implements
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 
-//		Bundle args1 = new Bundle();
-//		friendSection = new WeiboSectionFragment();
-//		args1.putInt(ARG_SECTION_NUMBER, SECTION_FRIENDS);
-//		friendSection.setArguments(args1);
-//		recommendSection = new WeiboSectionFragment();
-//		Bundle args2 = new Bundle();
-//		args2.putInt(ARG_SECTION_NUMBER, SECTION_RECOMMENDS);
-//		recommendSection.setArguments(args2);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-		
-		
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -126,33 +116,24 @@ public class HomeActivity extends FragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 	}
 	
+	/**
+	 * OAuth weibo request completed
+	 */
 	@Override
 	public void onComplete(String arg0){
-		
-		Log.i("On request complete", "On request completed!");
 		
 		OAuth2.response=arg0;
 		int section=mViewPager.getCurrentItem();
 		final List<Status> newList=OAuth2.parseResponse();
 		
-		if(section==SECTION_FRIENDS){
-			if(newList.size()>0){
-				//returned first id < OAuth2.maxId, earlier status
-				int index=Long.parseLong(newList.get(0).getId())<OAuth2.maxId ?
-						friendStatusList.size():0;
-				friendStatusList.addAll(index,newList);
-			}
-			
-
-		}
-		else if(section==SECTION_RECOMMENDS){
-			publicStatusList.addAll(newList);
-
-		}
-		updateSection(section);
+		if (section == SECTION_FRIENDS) 
+			this.addToList(friendStatusList, newList);
+		else if (section == SECTION_RECOMMENDS) 
+			this.addToList(publicStatusList, newList);
+	
+		this.updateSection(section);
 	
 		//toast shows the new loaded number
-		
 		this.runOnUiThread(new Runnable() {
 		     public void run() {
 		 		if(newList.size()==0)
@@ -161,8 +142,14 @@ public class HomeActivity extends FragmentActivity implements
 					Toast.makeText(getApplication(),newList.size()+getString(R.string.new_statuses), Toast.LENGTH_SHORT).show();
 		     }
 		});
-		
+	}
 	
+	private static void addToList(List<Status> statusList, List<Status> newList) {
+		if (newList.size() > 0) {
+			// returned first id < OAuth2.maxId, earlier status
+			int index = Long.parseLong(newList.get(0).getId()) < OAuth2.maxId ? statusList.size() : 0;
+			statusList.addAll(index, newList);
+		}
 	}
 
 	@Override
@@ -193,9 +180,7 @@ public class HomeActivity extends FragmentActivity implements
 	
 	public void updateSection(final int section){
 		Log.e("Update-List", "--------Test Update Section-------");
-//			Log.e("Section number", "Section: "+section);
-//			Log.e("Fragment tag", "Frament Tag: "+this.getTag());
-//			Log.e("Maked Tag","Maked Tag: "+makeFragmentName(R.id.pager,section));
+
 			this.runOnUiThread(new Runnable() {
 				
 			     public void run() {
@@ -210,6 +195,34 @@ public class HomeActivity extends FragmentActivity implements
 			});
 
 	}
+	
+	/**
+	 * Listen to listview refresh event
+	 */
+	@Override
+	public void refreshing(int section) {
+		if(section==SECTION_FRIENDS)
+			oauth.requestNewFriendStatus(this);
+		if(section==SECTION_RECOMMENDS)
+			oauth.requestPublicStatus(this);
+	}
+
+	@Override
+	public void refreshed(Object obj) {
+		// TODO Auto-generated method stub
+		Log.i("Refreshed", "Refreshed!!!!");
+		
+		
+	}
+
+	@Override
+	public void more(int section) {
+		if(section==SECTION_FRIENDS)
+			oauth.requestEarlierFriendStatus(this);
+		if(section==SECTION_RECOMMENDS)
+			oauth.requestPublicStatus(this);
+	}
+	
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -248,26 +261,6 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
-	}
-
-	@Override
-	public Object refreshing() {
-		// TODO Auto-generated method stub
-		oauth.requestNewFriendStatus(this);
-		return null;
-	}
-
-	@Override
-	public void refreshed(Object obj) {
-		// TODO Auto-generated method stub
-		Log.i("Refreshed", "Refreshed!!!!");
-		
-		
-	}
-
-	@Override
-	public void more() {
-		oauth.requestEarlierFriendStatus(this);
 	}
 
 
