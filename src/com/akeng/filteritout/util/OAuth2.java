@@ -16,6 +16,7 @@ import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.api.StatusesAPI;
 import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
 import com.weibo.sdk.android.net.RequestListener;
@@ -66,15 +67,15 @@ public class OAuth2 {
     }
     
     public void requestNewFriendStatus(RequestListener listener){
-    	statusesAPI.friendsTimeline(sinceId, 0, 15, 1, false, FEATURE.ALL, false, listener);
+    	requestFriendStatus(sinceId,0,listener);
     }
     
     public void requestEarlierFriendStatus(RequestListener listener){
-    	statusesAPI.friendsTimeline(0, maxId, 15, 1, false, FEATURE.ALL, false, listener);
+    	requestFriendStatus(0,maxId,listener);
     }
     
     public void requestFriendStatus(long sinceId,long maxId,RequestListener listener){
-		statusesAPI.friendsTimeline(sinceId, maxId, 15, 1, false, FEATURE.ALL, false, listener);
+    		statusesAPI.friendsTimeline(sinceId, maxId, 15, 1, false, FEATURE.ALL, false, listener);
     }
     
     public void requestPublicStatus(RequestListener listener){
