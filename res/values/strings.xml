@@ -14,5 +14,7 @@
     <string name="release_to_update">松手刷新</string>
     <string name="more">更多</string>
     <string name="loading">正在加载</string>
+    <string name="no_more_new">没有新的微博</string>
+    <string name="new_statuses">条新的微博</string>
     
 </resources>

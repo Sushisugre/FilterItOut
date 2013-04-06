@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.akeng.filteritout.R;
@@ -25,7 +24,7 @@ public class WeiboSectionFragment extends Fragment{
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private List<Status> statusList;
-	private ListView statusListView;
+	public WeiboListView statusListView;
 	
 	public WeiboSectionFragment() {
 		statusList=new ArrayList<Status>( );
@@ -36,14 +35,13 @@ public class WeiboSectionFragment extends Fragment{
 			Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.weibo_section, container, false);
-		statusListView = (ListView) v.findViewById(R.id.Msglist);
-		int section = this.getArguments().getInt(
-				HomeActivity.ARG_SECTION_NUMBER);
+		statusListView = (WeiboListView) v.findViewById(R.id.Msglist);
 		StatusAdapter statusAdapter = new StatusAdapter();
 		statusListView.setAdapter(statusAdapter);
-
+		statusListView.setRefreshListener((HomeActivity)getActivity());
 		return v;
 	}
+	
 	
 	 
 
@@ -64,6 +62,8 @@ public class WeiboSectionFragment extends Fragment{
 		HeaderViewListAdapter ha = (HeaderViewListAdapter) statusListView.getAdapter();
 		StatusAdapter adapter=(StatusAdapter)ha.getWrappedAdapter();
 				adapter.notifyDataSetChanged();
+		//statusListView.setSelectionAfterHeaderView();
+				statusListView.finishFootView();
 
 	}
 	
@@ -184,4 +184,5 @@ public class WeiboSectionFragment extends Fragment{
 
 		}
 	}
+
 }

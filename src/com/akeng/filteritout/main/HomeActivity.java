@@ -18,12 +18,13 @@ import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
+import com.akeng.filteritout.main.WeiboListView.RefreshListener;
 import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
 
 public class HomeActivity extends FragmentActivity implements
-		ActionBar.TabListener,RequestListener {
+		ActionBar.TabListener,RequestListener,RefreshListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -66,25 +67,23 @@ public class HomeActivity extends FragmentActivity implements
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		Bundle args1 = new Bundle();
-		friendSection = new WeiboSectionFragment();
-		args1.putInt(ARG_SECTION_NUMBER, SECTION_FRIENDS);
-		friendSection.setArguments(args1);
-		recommendSection = new WeiboSectionFragment();
-		Bundle args2 = new Bundle();
-		args2.putInt(ARG_SECTION_NUMBER, SECTION_RECOMMENDS);
-		recommendSection.setArguments(args2);
+
+//		Bundle args1 = new Bundle();
+//		friendSection = new WeiboSectionFragment();
+//		args1.putInt(ARG_SECTION_NUMBER, SECTION_FRIENDS);
+//		friendSection.setArguments(args1);
+//		recommendSection = new WeiboSectionFragment();
+//		Bundle args2 = new Bundle();
+//		args2.putInt(ARG_SECTION_NUMBER, SECTION_RECOMMENDS);
+//		recommendSection.setArguments(args2);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		
 		
 
-		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
+
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
@@ -129,20 +128,41 @@ public class HomeActivity extends FragmentActivity implements
 	
 	@Override
 	public void onComplete(String arg0){
+		
+		Log.i("On request complete", "On request completed!");
+		
 		OAuth2.response=arg0;
 		int section=mViewPager.getCurrentItem();
+		final List<Status> newList=OAuth2.parseResponse();
+		
 		if(section==SECTION_FRIENDS){
-			friendStatusList.addAll(OAuth2.parseResponse());
-			Log.e("Status Number", ""+friendStatusList.size());
+			if(newList.size()>0){
+				//returned first id < OAuth2.maxId, earlier status
+				int index=Long.parseLong(newList.get(0).getId())<OAuth2.maxId ?
+						friendStatusList.size():0;
+				friendStatusList.addAll(index,newList);
+			}
+			
 
 		}
 		else if(section==SECTION_RECOMMENDS){
-			publicStatusList.addAll(OAuth2.parseResponse());
-			Log.e("Status Number", ""+publicStatusList.size());
+			publicStatusList.addAll(newList);
 
 		}
-		
 		updateSection(section);
+	
+		//toast shows the new loaded number
+		
+		this.runOnUiThread(new Runnable() {
+		     public void run() {
+		 		if(newList.size()==0)
+					Toast.makeText(getApplication(),getString(R.string.no_more_new), Toast.LENGTH_SHORT).show();
+				else
+					Toast.makeText(getApplication(),newList.size()+getString(R.string.new_statuses), Toast.LENGTH_SHORT).show();
+		     }
+		});
+		
+	
 	}
 
 	@Override
@@ -228,6 +248,26 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public Object refreshing() {
+		// TODO Auto-generated method stub
+		oauth.requestNewFriendStatus(this);
+		return null;
+	}
+
+	@Override
+	public void refreshed(Object obj) {
+		// TODO Auto-generated method stub
+		Log.i("Refreshed", "Refreshed!!!!");
+		
+		
+	}
+
+	@Override
+	public void more() {
+		oauth.requestEarlierFriendStatus(this);
 	}
 
 

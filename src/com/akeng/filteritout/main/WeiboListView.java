@@ -15,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,7 +61,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	
 	public WeiboListView(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		init(context);
 	}
 	
 	public WeiboListView(Context context, AttributeSet attrs) {
@@ -94,8 +95,8 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	            }
 	        });
 	 
-	        setSelection(1);
 	        setOnScrollListener(this);
+	        setSelectionAfterHeaderView();
 	        measureView(mHeaderLinearLayout);
 	        mHeaderHeight = mHeaderLinearLayout.getMeasuredHeight();
 	 
@@ -104,7 +105,11 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	    }
 
 
-	    @Override
+	    public void setRefreshListener(RefreshListener mRefreshListener) {
+		this.mRefreshListener = mRefreshListener;
+	}
+
+		@Override
 	    public boolean onTouchEvent(MotionEvent ev) {
 	        switch (ev.getAction()) {
 	            case MotionEvent.ACTION_DOWN:
@@ -191,11 +196,12 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	        mCurrentScrollState = scrollState;
 	    }
 	 
-//	    @Override
-//	    public void setAdapter(ListAdapter adapter) {
-//	        super.setAdapter(adapter);
-//	        setSelection(1);
-//	    }
+	    @Override
+	    public void setAdapter(ListAdapter adapter) {
+	        super.setAdapter(adapter);
+	        mPullRefreshState = NONE_PULL_REFRESH;
+	        setSelectionAfterHeaderView();
+	        }
 	 
 	    private void measureView(View child) {
 	        ViewGroup.LayoutParams p = child.getLayoutParams();
