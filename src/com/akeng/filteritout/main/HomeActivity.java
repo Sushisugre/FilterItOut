@@ -211,8 +211,6 @@ public class HomeActivity extends FragmentActivity implements
 	public void refreshed(Object obj) {
 		// TODO Auto-generated method stub
 		Log.i("Refreshed", "Refreshed!!!!");
-		
-		
 	}
 
 	@Override

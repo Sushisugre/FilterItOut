@@ -1,5 +1,6 @@
 package com.akeng.filteritout.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,8 @@ import android.view.View;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.util.AndroidHelper;
+import com.akeng.filteritout.util.OAuth2;
+import com.weibo.sdk.android.Oauth2AccessToken;
 
 public class MainActivity extends FragmentActivity{
 
@@ -27,9 +30,15 @@ public class MainActivity extends FragmentActivity{
 		
 		//TODO:Check token expired and renew
 		//now simply request token every time
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, AuthorizeActivity.class);
-        startActivity(intent);
+		OAuth2 oauth=new OAuth2(this.getApplicationContext());
+		Oauth2AccessToken token=OAuth2.getAccessToken();
+		Intent intent = new Intent();
+		if(token==null||token.getToken()==null)
+	        intent.setClass(MainActivity.this, AuthorizeActivity.class);
+		else
+			intent.setClass(MainActivity.this, HomeActivity.class);
+	    
+		startActivity(intent);
 		
 //		//get user list
 //		DataHelper dbHelper=new DataHelper(this);

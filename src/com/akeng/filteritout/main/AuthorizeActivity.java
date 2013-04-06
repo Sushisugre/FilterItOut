@@ -35,7 +35,7 @@ public class AuthorizeActivity extends Activity {
 		dialog.show();
 		
 		
-    	oauth=new OAuth2(AuthorizeActivity.this, new AuthDialogListener(AuthorizeActivity.this));
+    	oauth=new OAuth2(this.getApplicationContext(), new AuthDialogListener(AuthorizeActivity.this));
 		
 		ImageButton btnStart=(ImageButton)diaView.findViewById(R.id.btn_start);
 		btnStart.setOnClickListener(new OnClickListener(){
