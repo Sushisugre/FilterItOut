@@ -1,7 +1,7 @@
 package com.akeng.filteritout.entity;
 
 public class Status {
-    private String id;
+    private long id;
     private String text;
     private String time;
     private String userId;
@@ -22,10 +22,10 @@ public class Status {
     	this.middlePic="";
     }
     
-	public String getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getText() {

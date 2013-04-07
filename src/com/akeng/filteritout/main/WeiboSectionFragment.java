@@ -54,8 +54,8 @@ public class WeiboSectionFragment extends Fragment{
 
 		if (section == HomeActivity.SECTION_FRIENDS){
 			statusList = HomeActivity.friendStatusList;
-			OAuth2.sinceId=Long.parseLong(statusList.get(0).getId());
-			OAuth2.maxId=Long.parseLong(statusList.get(statusList.size()-1).getId())-1;
+			OAuth2.sinceId=statusList.get(0).getId();
+			OAuth2.maxId=statusList.get(statusList.size()-1).getId()-1;
 		}
 		if (section == HomeActivity.SECTION_RECOMMENDS)
 			statusList = HomeActivity.publicStatusList;

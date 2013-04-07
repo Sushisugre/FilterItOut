@@ -1,8 +1,11 @@
 package com.akeng.filteritout.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +19,6 @@ import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
-import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.api.StatusesAPI;
 import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
 import com.weibo.sdk.android.net.RequestListener;
@@ -27,12 +29,12 @@ public class OAuth2 {
     private static final String REDIRECT_URL = "http://apps.weibo.com/sfourtestapp";
 	public static final String FRIEND_STATUS="friend";
 	public static final String PUBLIC_STATUS="public";
+	public static final Set<String> TOKEN_ERRORS = new HashSet<String>(Arrays.asList(new String[]{"21315","21327","21316","21317","21314"}));
 	
 	private static Weibo mWeibo;
 	private static Context context;
 	private static WeiboAuthListener listener;
 	private static StatusesAPI statusesAPI;
-	public static String response;
 	public static final String TAG = "OAuth2";
 	public static long sinceId=0;
 	public static long maxId=0;
@@ -82,12 +84,19 @@ public class OAuth2 {
 		statusesAPI.publicTimeline(15, 1, false, listener);
     }
     
-    public static List<Status> parseResponse(){
+    public static List<Status> parseResponse(String response){
     	
 		 List<Status> statusList=new ArrayList<Status>();
 		 Log.i("JSON Response", response);
     	try{
     		JSONObject jsonResponse=new JSONObject(response);
+    		//api error
+    		if(jsonResponse.has("error")){
+    			jsonResponse.getString("error");
+    			jsonResponse.getInt("error_code");
+    		}
+    		
+    		
         	JSONArray data=jsonResponse.getJSONArray("statuses");
         	for(int i=0;i<data.length();i++)
             {
@@ -142,7 +151,7 @@ public class OAuth2 {
                 //Log.e("bmiddle_pic",obj.getString("bmiddle_pic"));
             }
             
-            status.setId(obj.getString("id"));
+            status.setId(obj.getLong("id"));
             status.setText(obj.getString("text"));
             status.setTime(obj.getString("created_at"));
             status.setUserId(u.getString("id"));
