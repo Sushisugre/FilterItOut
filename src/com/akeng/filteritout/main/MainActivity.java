@@ -33,7 +33,7 @@ public class MainActivity extends FragmentActivity{
 		OAuth2 oauth=new OAuth2(this.getApplicationContext());
 		Oauth2AccessToken token=OAuth2.getAccessToken();
 		Intent intent = new Intent();
-		if(token==null||token.getToken()==null)
+		if(token==null||token.getToken()==null||token.getToken().equals(""))
 	        intent.setClass(MainActivity.this, AuthorizeActivity.class);
 		else
 			intent.setClass(MainActivity.this, HomeActivity.class);

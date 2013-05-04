@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -99,6 +100,21 @@ public class HomeActivity extends FragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_home, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.menu_settings:
+	            return true;
+	        case R.id.menu_tag:
+	        	Intent launchNewIntent = new Intent(HomeActivity.this,TagActivity.class);
+	        	startActivityForResult(launchNewIntent, 0);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 	@Override
@@ -185,7 +201,20 @@ public class HomeActivity extends FragmentActivity implements
 	@Override
 	public void onError(WeiboException arg0) {
 		Log.e("Weibo Status","Fail to get weibo, Status code: "+arg0.getStatusCode());
-		Toast.makeText(this, "获取微博失败："+arg0.getStatusCode(), Toast.LENGTH_SHORT).show();
+		String info;
+		if(arg0.getStatusCode()==-1)
+			info="无法连接服务器，请检查网络";
+		else{
+			info="错误代码："+arg0.getStatusCode();
+		}
+		
+		final String message=info;
+		this.runOnUiThread(new Runnable() {
+			
+		     public void run() {
+		 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+		     }
+		});
 	}
 
 	@Override
