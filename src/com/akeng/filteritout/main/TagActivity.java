@@ -6,15 +6,18 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -36,6 +39,17 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 		tagGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
 		tagGridview.setMultiChoiceModeListener(this);
 		tagGridview.setAdapter(new GridAdapter(TagActivity.this));
+		tagGridview.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position,
+					long id) {
+				Log.i("OnItemClick!", "position"+position);
+				TagView tagText = (TagView) v.findViewById(R.id.tag_name);
+				tagText.toggle();
+			}
+			
+		});
 		
 	}
 
@@ -47,7 +61,7 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 	}
 	
 	
-	public class GridAdapter extends BaseAdapter {
+	public class GridAdapter extends BaseAdapter{
 		private Context mContext;
 		private List<String> categories;
 		
@@ -61,6 +75,7 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 	        categories.add("互联网");
 	        categories.add("星座");
 	        categories.add("文学");
+	        categories.add("汽车");
 	        		
 	    }
 		
@@ -83,18 +98,20 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView tagText;
+			TagView tagText;
+			CheckBox tagCheck;
 			
 			if (convertView == null) {
 				convertView = View.inflate(parent.getContext(), R.layout.tag,null);
 			}
 		
-			tagText = (TextView) convertView.findViewById(R.id.tag_name);
+			tagText = (TagView) convertView.findViewById(R.id.tag_name);
 			tagText.setText(categories.get(position));
+			tagCheck = (CheckBox) convertView.findViewById(R.id.tag_check);
 			
 			return convertView;
 		}
-		
+
 	}
 
 
