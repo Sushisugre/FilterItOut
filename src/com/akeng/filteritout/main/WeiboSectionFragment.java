@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -99,38 +101,72 @@ public class WeiboSectionFragment extends Fragment{
 			TextView statusText;
 			TextView statusTime;
 			ImageView statusImage;
+			LikeButton btnLike;
+			ImageButton btnDelete;
+			
+			Status status = (Status) getItem(position);
 
-			if (convertView == null) {
-				convertView = View.inflate(parent.getContext(), R.layout.weibo,
-						null);
-				userProfileImage = (ImageView) convertView
-						.findViewById(R.id.wbicon);
+//			if (convertView == null) {
+				convertView = View.inflate(parent.getContext(), R.layout.weibo,null);
+				userProfileImage = (ImageView) convertView.findViewById(R.id.wbicon);
 				username = (TextView) convertView.findViewById(R.id.wbuser);
 				statusText = (TextView) convertView.findViewById(R.id.wbtext);
 				statusTime = (TextView) convertView.findViewById(R.id.wbtime);
-				statusImage = (ImageView) convertView
-						.findViewById(R.id.wbimage);
+				statusImage = (ImageView) convertView.findViewById(R.id.wbimage);
+				btnLike = (LikeButton) convertView.findViewById(R.id.btn_like);
+				btnDelete = (ImageButton) convertView.findViewById(R.id.btn_delete);
 
-				StatusHolder viewHolder = new StatusHolder();
-				viewHolder.setUsername(username);
-				viewHolder.setUserProfileImage(userProfileImage);
-				viewHolder.setStatusText(statusText);
-				viewHolder.setStatusTime(statusTime);
-				viewHolder.setStatusImage(statusImage);
-				convertView.setTag(viewHolder);
-			} else {
-				StatusHolder viewHolder = (StatusHolder) convertView.getTag();
-				userProfileImage = viewHolder.getUserProfileImage();
-				username = viewHolder.getUsername();
-				statusText = viewHolder.getStatusText();
-				statusTime = viewHolder.statusTime;
-				statusImage = viewHolder.getStatusImage();
-			}
+//				StatusHolder viewHolder = new StatusHolder();
+//				viewHolder.username=username;
+//				viewHolder.userProfileImage=userProfileImage;
+//				viewHolder.statusText=statusText;
+//				viewHolder.statusTime=statusTime;
+//				viewHolder.statusImage=statusImage;
+//				viewHolder.btnDelete=btnDelete;
+//				viewHolder.btnLike=btnLike;
+				
+				final int statusPosition=position;
+				
+				btnLike.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						LikeButton button=(LikeButton)v;
+						button.toggle();
+						Status status=statusList.get(statusPosition);
+						boolean isLike=status.isLike();
+						status.setLike(!isLike);
+					}});
+				
+				btnDelete.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						Log.i("OnClickListener", "delete button");
+						Status status=statusList.get(statusPosition);
+						status.setDeleted(true);
+					}});
+				
+//				convertView.setTag(viewHolder);
+//				//mark with statue id
+//				viewHolder.btnLike.setTag(status.getId());
+				
+//			} else {
+//				StatusHolder viewHolder = (StatusHolder) convertView.getTag();
+//				userProfileImage = viewHolder.userProfileImage;
+//				username = viewHolder.username;
+//				statusText = viewHolder.statusText;
+//				statusTime = viewHolder.statusTime;
+//				statusImage = viewHolder.statusImage;
+//				btnDelete = viewHolder.btnDelete;
+//				btnLike = viewHolder.btnLike;
+//				//update tage
+//				((StatusHolder) convertView.getTag()).btnLike.setTag(status.getId());
+//			}
 
-			Status status = (Status) getItem(position);
+			
 			username.setText(status.getUsername());
 			statusText.setText(status.getText());
 			statusTime.setText(status.getTime());
+			btnLike.setChecked(statusList.get(statusPosition).isLike());
 
 			return convertView;
 		}
@@ -142,48 +178,12 @@ public class WeiboSectionFragment extends Fragment{
 			TextView statusText;
 			TextView statusTime;
 			ImageView statusImage;
-
-			public void setUserProfileImage(ImageView userProfileImage) {
-				this.userProfileImage = userProfileImage;
-			}
-
-			public void setUsername(TextView username) {
-				this.username = username;
-			}
-
-			public void setStatusText(TextView statusText) {
-				this.statusText = statusText;
-			}
-
-			public void setStatusTime(TextView statusTime) {
-				this.statusTime = statusTime;
-			}
-
-			public void setStatusImage(ImageView statusImage) {
-				this.statusImage = statusImage;
-			}
-
-			public ImageView getUserProfileImage() {
-				return userProfileImage;
-			}
-
-			public TextView getUsername() {
-				return username;
-			}
-
-			public TextView getStatusText() {
-				return statusText;
-			}
-
-			public TextView getStatusTime() {
-				return statusTime;
-			}
-
-			public ImageView getStatusImage() {
-				return statusImage;
-			}
+			LikeButton btnLike;
+			ImageButton btnDelete;
 
 		}
 	}
+	
+	
 
 }

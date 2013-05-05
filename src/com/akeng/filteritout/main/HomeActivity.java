@@ -293,7 +293,6 @@ public class HomeActivity extends FragmentActivity implements
 
 		@Override
 		public WeiboSectionFragment getItem(int position) {
-			Log.e("Frament Adapter", "---get Item------");
 			
 			WeiboSectionFragment fragment = new WeiboSectionFragment();
 			Bundle args = new Bundle();

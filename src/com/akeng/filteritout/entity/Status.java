@@ -15,11 +15,15 @@ public class Status {
     private int commentsCount;
     private int attitudesCount;
     private Status retweetedStatus;
+    private boolean isLike;
+    private boolean isDeleted;
     
     public Status(){
     	this.haveImage=false;
     	this.thumbnailPic="";
     	this.middlePic="";
+    	this.isLike=false;
+    	this.isDeleted=false;
     }
     
 	public long getId() {
@@ -105,6 +109,22 @@ public class Status {
 	}
 	public void setRetweetedStatus(Status retweetedStatus) {
 		this.retweetedStatus = retweetedStatus;
+	}
+
+	public boolean isLike() {
+		return isLike;
+	}
+
+	public void setLike(boolean isLike) {
+		this.isLike = isLike;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 

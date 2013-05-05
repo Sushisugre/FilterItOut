@@ -7,25 +7,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.util.AndroidHelper;
 
-public class TagActivity extends Activity implements MultiChoiceModeListener {
-
+public class TagActivity extends Activity{
+	
+	private GridView tagGridview;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,9 +31,8 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 		AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
 
 		
-		GridView tagGridview = (GridView) findViewById(R.id.taggridview);
+		tagGridview = (GridView) findViewById(R.id.taggridview);
 		tagGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
-		tagGridview.setMultiChoiceModeListener(this);
 		tagGridview.setAdapter(new GridAdapter(TagActivity.this));
 		tagGridview.setOnItemClickListener(new OnItemClickListener(){
 
@@ -47,6 +42,10 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 				Log.i("OnItemClick!", "position"+position);
 				TagView tagText = (TagView) v.findViewById(R.id.tag_name);
 				tagText.toggle();
+				
+				for(int i=0;i<7;i++)
+					Log.i("Checked iTem", "position "+i+" "+tagGridview.getCheckedItemPositions().get(i));
+
 			}
 			
 		});
@@ -86,20 +85,17 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 
 		@Override
 		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
+			return categories.get(arg0);
 		}
 
 		@Override
 		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TagView tagText;
-			CheckBox tagCheck;
 			
 			if (convertView == null) {
 				convertView = View.inflate(parent.getContext(), R.layout.tag,null);
@@ -107,46 +103,11 @@ public class TagActivity extends Activity implements MultiChoiceModeListener {
 		
 			tagText = (TagView) convertView.findViewById(R.id.tag_name);
 			tagText.setText(categories.get(position));
-			tagCheck = (CheckBox) convertView.findViewById(R.id.tag_check);
 			
 			return convertView;
 		}
 
 	}
 
-
-	@Override
-	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-		 // Inflate the menu for the CAB
-        MenuInflater inflater = mode.getMenuInflater();
-        inflater.inflate(R.menu.activity_tag, menu);
-        return true;
-	}
-
-	@Override
-	public void onDestroyActionMode(ActionMode mode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onItemCheckedStateChanged(ActionMode mode, int position,
-			long id, boolean checked) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 
 }
