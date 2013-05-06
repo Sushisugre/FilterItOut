@@ -6,7 +6,9 @@ import android.util.Log;
 import android.widget.Checkable;
 import android.widget.TextView;
 
+import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Tag;
+import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.DataHelper;
 
 public class TagView extends TextView implements Checkable{
@@ -40,11 +42,17 @@ public class TagView extends TextView implements Checkable{
 	public void toggle() {
 		isChecked = !isChecked;
 		
+		String tagName=((TextView)this.findViewById(R.id.tag_name)).getText().toString();
+		String userId=AccessTokenKeeper.readUserId(this.getContext());
+		if(userId==""){
+		//TODO:
+		}
+		
 		DataHelper dataHelper=new DataHelper(this.getContext());
 		if(isChecked)
-			dataHelper.addTag("1", "TestTag",Tag.FAVOR);
+			dataHelper.addTag(userId,tagName,Tag.FAVOR);
 		else
-			dataHelper.removeTag("1", "TestTag",Tag.FAVOR);
+			dataHelper.removeTag(userId, tagName,Tag.FAVOR);
 		
 		dataHelper.Close();
 		Log.i("--Toggle--", "isChecked "+isChecked());

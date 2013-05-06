@@ -141,7 +141,7 @@ public class DataHelper {
 	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TAG_NAME+"=\""+tagName+"\" and "+Tag.TYPE+"="+type;
 	        Cursor cursor=db.query(SqliteHelper.TB_TAGS, null, where, null, null, null,null);
 	        hasTag=cursor.moveToFirst();
-	        Log.e("Has Tag",tagName+":"+hasTag.toString());
+	        Log.e("Has Tag","User id:"+userId+",Tag name:"+tagName+",Tag type:"+type+",exist:"+hasTag.toString());
 	        cursor.close();
 	        
 	        return hasTag;
@@ -159,12 +159,14 @@ public class DataHelper {
 	    	 values.put(Tag.TIME, (new Date()).getTime());
 	    	 
 	    	 db.insert(SqliteHelper.TB_TAGS, null, values);
+		     Log.e("Add Tag","User id:"+userId+",Tag name:"+tagName+",Tag type:"+type);
+
 	    }
 	    
 	    public int removeTag(String userId,String tagName,int type){
 	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TAG_NAME+"=\""+tagName+"\" and "+Tag.TYPE+"="+type;
 	        int num =  db.delete(SqliteHelper.TB_TAGS, where, null);
-	        Log.e("Delete Tag",tagName);
+		     Log.e("Delete Tag","User id:"+userId+",Tag name:"+tagName+",Tag type:"+type);
 	        return num;
 	    }
 }
