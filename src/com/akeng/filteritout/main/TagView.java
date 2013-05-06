@@ -41,20 +41,6 @@ public class TagView extends TextView implements Checkable{
 	@Override
 	public void toggle() {
 		isChecked = !isChecked;
-		
-		String tagName=((TextView)this.findViewById(R.id.tag_name)).getText().toString();
-		String userId=AccessTokenKeeper.readUserId(this.getContext());
-		if(userId==""){
-		//TODO:
-		}
-		
-		DataHelper dataHelper=new DataHelper(this.getContext());
-		if(isChecked)
-			dataHelper.addTag(userId,tagName,Tag.FAVOR);
-		else
-			dataHelper.removeTag(userId, tagName,Tag.FAVOR);
-		
-		dataHelper.Close();
 		Log.i("--Toggle--", "isChecked "+isChecked());
 	}
 	

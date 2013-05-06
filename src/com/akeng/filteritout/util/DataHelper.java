@@ -116,7 +116,7 @@ public class DataHelper {
 	    public List<Tag> getUserTags(String userId,int type){
 	    	List<Tag> tags=new ArrayList<Tag>();
 	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TYPE+"="+type;
-	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, where, null, null, null, UserInfo.ID+" DESC");
+	        Cursor cursor=db.query(SqliteHelper.TB_TAGS, null, where, null, null, null, Tag.TIME+" DESC");
 	        
 	        if (!cursor.moveToFirst())
 	        	return null;
@@ -128,6 +128,8 @@ public class DataHelper {
 	        	tag.setUserId(userId);
 	        	tag.setType(type);
 	        	tag.setTime(cursor.getLong(4));
+	        	
+	        	tags.add(tag);
 
 	            cursor.moveToNext();
 	        }
@@ -167,6 +169,12 @@ public class DataHelper {
 	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TAG_NAME+"=\""+tagName+"\" and "+Tag.TYPE+"="+type;
 	        int num =  db.delete(SqliteHelper.TB_TAGS, where, null);
 		     Log.e("Delete Tag","User id:"+userId+",Tag name:"+tagName+",Tag type:"+type);
+	        return num;
+	    }
+	    
+	    public int clearAllTags(){
+	    	int num =  db.delete(SqliteHelper.TB_TAGS, null, null);
+	    	Log.e("Clear All Tags",num+" items deleted");
 	        return num;
 	    }
 }
