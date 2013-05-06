@@ -5,12 +5,13 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 
 import com.akeng.filteritout.R;
+import com.akeng.filteritout.listener.AuthDialogListener;
 import com.akeng.filteritout.util.AndroidHelper;
 import com.akeng.filteritout.util.OAuth2;
-import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 
 public class AuthorizeActivity extends Activity {
@@ -31,7 +32,7 @@ public class AuthorizeActivity extends Activity {
 		View diaView=View.inflate(this, R.layout.dialog, null);
 		dialog=new Dialog(AuthorizeActivity.this,R.style.dialog);
 		dialog.setContentView(diaView);
-		dialog.getWindow().setLayout(210,140);
+		dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT,200);
 		dialog.show();
 		
 		

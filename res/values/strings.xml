@@ -7,6 +7,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">设置</string>
     <string name="menu_tags">标签</string>
+    <string name="save">保存</string>
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_authorize">AuthorizeActivity</string>
