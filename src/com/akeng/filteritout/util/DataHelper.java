@@ -3,6 +3,7 @@ package com.akeng.filteritout.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -13,10 +14,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.entity.UserInfo;
 
 public class DataHelper {
-	 private static String DB_NAME = "mysinaweibo.db";
+	 private static String DB_NAME = "filteritout.db";
 	    //data base version
 	    private static int DB_VERSION = 2;
 	    private SQLiteDatabase db;
@@ -36,7 +38,7 @@ public class DataHelper {
 	    public List<UserInfo> GetUserList(Boolean isSimple)
 	    {
 	        List<UserInfo> userList = new ArrayList<UserInfo>();
-	        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, null, null, null, null, UserInfo.ID+" DESC");
+	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, null, null, null, null, UserInfo.ID+" DESC");
 	        cursor.moveToFirst();
 	        while(!cursor.isAfterLast()&& (cursor.getString(1)!=null)){
 	            UserInfo user=new UserInfo();
@@ -60,7 +62,7 @@ public class DataHelper {
 	    public Boolean HaveUserInfo(String UserId)
 	    {
 	        Boolean b=false;
-	        Cursor cursor=db.query(SqliteHelper.TB_NAME, null, UserInfo.USERID + "=" + UserId, null, null, null,null);
+	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, UserInfo.USERID + "=" + UserId, null, null, null,null);
 	        b=cursor.moveToFirst();
 	        Log.e("HaveUserInfo",b.toString());
 	        cursor.close();
@@ -78,7 +80,7 @@ public class DataHelper {
 	        userIcon.compress(Bitmap.CompressFormat.PNG, 100, os);   
 	        // construct SQLite Content object, can also use raw  
 	        values.put(UserInfo.USERICON, os.toByteArray());
-	        int id= db.update(SqliteHelper.TB_NAME, values, UserInfo.USERID + "=" + UserId, null);
+	        int id= db.update(SqliteHelper.TB_USER, values, UserInfo.USERID + "=" + UserId, null);
 	        Log.e("UpdateUserInfo2",id+"");
 	        return id;
 	    }
@@ -89,7 +91,7 @@ public class DataHelper {
 	        values.put(UserInfo.USERID, user.getUserId());
 	        values.put(UserInfo.TOKEN, user.getToken());
 	       // values.put(UserInfo.TOKENSECRET, user.getTokenSecret());
-	        int id= db.update(SqliteHelper.TB_NAME, values, UserInfo.USERID + "=" + user.getUserId(), null);
+	        int id= db.update(SqliteHelper.TB_USER, values, UserInfo.USERID + "=" + user.getUserId(), null);
 	        Log.e("UpdateUserInfo",id+"");
 	        return id;
 	    }
@@ -100,14 +102,69 @@ public class DataHelper {
 	        values.put(UserInfo.USERID, user.getUserId());
 	        values.put(UserInfo.TOKEN, user.getToken());
 	        //values.put(UserInfo.TOKENSECRET, user.getTokenSecret());
-	        Long uid = db.insert(SqliteHelper.TB_NAME, UserInfo.ID, values);
+	        Long uid = db.insert(SqliteHelper.TB_USER, UserInfo.ID, values);
 	        Log.e("SaveUserInfo",uid+"");
 	        return uid;
 	    }
 	    
 	    public int DelUserInfo(String UserId){
-	        int id=  db.delete(SqliteHelper.TB_NAME, UserInfo.USERID +"="+UserId, null);
+	        int id=  db.delete(SqliteHelper.TB_USER, UserInfo.USERID +"="+UserId, null);
 	        Log.e("DelUserInfo",id+"");
 	        return id;
+	    }
+	    
+	    public List<Tag> getUserTags(String userId,int type){
+	    	List<Tag> tags=new ArrayList<Tag>();
+	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TYPE+"="+type;
+	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, where, null, null, null, UserInfo.ID+" DESC");
+	        
+	        if (!cursor.moveToFirst())
+	        	return null;
+	        
+	        while(!cursor.isAfterLast()){
+	        	Tag tag=new Tag();
+	        	tag.setId(cursor.getString(0));
+	        	tag.setTagName(cursor.getString(2));
+	        	tag.setUserId(userId);
+	        	tag.setType(type);
+	        	tag.setTime(cursor.getLong(4));
+
+	            cursor.moveToNext();
+	        }
+	        cursor.close();
+	        
+	        return tags;
+	    }
+	    
+	    public boolean hasTag(String userId,String tagName,int type){
+	        Boolean hasTag=false;
+	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TAG_NAME+"=\""+tagName+"\" and "+Tag.TYPE+"="+type;
+	        Cursor cursor=db.query(SqliteHelper.TB_TAGS, null, where, null, null, null,null);
+	        hasTag=cursor.moveToFirst();
+	        Log.e("Has Tag",tagName+":"+hasTag.toString());
+	        cursor.close();
+	        
+	        return hasTag;
+	    }
+	    
+	    public void addTag(String userId,String tagName,int type){
+	    	
+	    	if(hasTag(userId,tagName,type))
+	    		return;
+	    	
+	    	 ContentValues values = new ContentValues();
+	    	 values.put(Tag.TAG_NAME, tagName);
+	    	 values.put(Tag.USERID, userId);
+	    	 values.put(Tag.TYPE, type);
+	    	 values.put(Tag.TIME, (new Date()).getTime());
+	    	 
+	    	 db.insert(SqliteHelper.TB_TAGS, null, values);
+	    }
+	    
+	    public int removeTag(String userId,String tagName,int type){
+	    	String where=Tag.USERID+"="+userId+" and "+ Tag.TAG_NAME+"=\""+tagName+"\" and "+Tag.TYPE+"="+type;
+	        int num =  db.delete(SqliteHelper.TB_TAGS, where, null);
+	        Log.e("Delete Tag",tagName);
+	        return num;
 	    }
 }

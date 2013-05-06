@@ -6,12 +6,15 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.entity.UserInfo;
 
 public class SqliteHelper extends SQLiteOpenHelper {
 
 	//save the table name of UserID,Access Token,Access Secret
-	public static final String TB_NAME="users";
+	public static final String TB_USER="users";
+	public static final String TB_TAGS="tags";
+
 	
 	public SqliteHelper(Context context, String name, CursorFactory factory,
 			int version) {
@@ -21,21 +24,32 @@ public class SqliteHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE IF NOT EXISTS "+
-                TB_NAME+"("+
-                UserInfo.ID+" integer primary key,"+
+				TB_USER+"("+
+                UserInfo.ID+" integer primary key autoincrement,"+
                 UserInfo.USERID+" varchar,"+
                 UserInfo.TOKEN+" varchar,"+
                 UserInfo.USERNAME+" varchar,"+
                 UserInfo.USERICON+" blob"+
                 ")"
                 );
+		
+		db.execSQL("CREATE TABLE IF NOT EXISTS "+
+				TB_TAGS+"("+
+                Tag.ID+" integer primary key,"+
+                Tag.USERID+" varchar,"+
+                Tag.TAG_NAME+" varchar,"+
+                Tag.TYPE+" integer,"+
+                Tag.TIME+" integer,"+
+                "foreign key ("+Tag.USERID+") "+"references "+TB_USER+" ("+UserInfo.USERID+"));"
+                );
+		
         Log.e("Database","onCreate");
 	}
 
 	 //update table
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TB_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TB_USER);
         onCreate(db);
         Log.e("Database","onUpgrade");
     }
@@ -43,7 +57,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public void updateColumn(SQLiteDatabase db, String oldColumn, String newColumn, String typeColumn){
         try{
             db.execSQL("ALTER TABLE " +
-                    TB_NAME + " CHANGE " +
+            		TB_USER + " CHANGE " +
                     oldColumn + " "+ newColumn +
                     " " + typeColumn
             );

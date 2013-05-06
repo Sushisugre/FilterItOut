@@ -6,6 +6,9 @@ import android.util.Log;
 import android.widget.Checkable;
 import android.widget.TextView;
 
+import com.akeng.filteritout.entity.Tag;
+import com.akeng.filteritout.util.DataHelper;
+
 public class TagView extends TextView implements Checkable{
 
 	private boolean isChecked;
@@ -37,6 +40,13 @@ public class TagView extends TextView implements Checkable{
 	public void toggle() {
 		isChecked = !isChecked;
 		
+		DataHelper dataHelper=new DataHelper(this.getContext());
+		if(isChecked)
+			dataHelper.addTag("1", "TestTag",Tag.FAVOR);
+		else
+			dataHelper.removeTag("1", "TestTag",Tag.FAVOR);
+		
+		dataHelper.Close();
 		Log.i("--Toggle--", "isChecked "+isChecked());
 	}
 	
