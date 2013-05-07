@@ -73,9 +73,12 @@ public class TagActivity extends Activity{
 					
 					boolean isChecked=tagGridview.getCheckedItemPositions().get(i);
 					
+					TagView item=(TagView)tagGridview.getChildAt(i).findViewById(R.id.tag_name);
+					String tagName=item.getText().toString();
+					isChecked=item.isChecked();
+					Log.i("is Checked", "Position "+i+":"+isChecked);
+					
 					if(isChecked){
-						View item=tagGridview.getChildAt(i);
-						String tagName=((TextView)item.findViewById(R.id.tag_name)).getText().toString();
 						if(userId==""){
 						//TODO:
 						}
@@ -113,13 +116,15 @@ public class TagActivity extends Activity{
 	        List<Tag> userTags=dataHelper.getUserTags(userId, Tag.FAVOR);
 	        dataHelper.Close();
 	        
-	        tagNum=userTags.size();
-	        Log.i("tag num", "Num "+tagNum);
-	        
-	        for(Tag tag:userTags){
-	        	tags.add(tag.getTagName());
+	        if(userTags!=null){
+		        tagNum=userTags.size();
+		        
+		        for(Tag tag:userTags){
+		        	tags.add(tag.getTagName());
+		        }	
 	        }
-	        
+
+	        Log.i("tag num", "Num "+tagNum);
 	        //add some default category
 	        if(tagNum<7){
 	        	for(String cat:categories){

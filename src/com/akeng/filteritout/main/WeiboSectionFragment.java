@@ -1,5 +1,6 @@
 package com.akeng.filteritout.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.util.OAuth2;
+import com.akeng.filteritout.util.WeiboAnalyzer;
 
 
 public class WeiboSectionFragment extends Fragment{
@@ -77,7 +79,6 @@ public class WeiboSectionFragment extends Fragment{
 
 		@Override
 		public int getCount() {
-			Log.e("Get Count", "View Count: "+statusList.size());
 			return statusList.size();
 		}
 
@@ -140,9 +141,17 @@ public class WeiboSectionFragment extends Fragment{
 				btnDelete.setOnClickListener(new OnClickListener(){
 					@Override
 					public void onClick(View v) {
-						Log.i("OnClickListener", "delete button");
+						
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
+						
+						//test split word
+						try{
+						WeiboAnalyzer.splitStatus(status.getText());
+						}
+						catch(IOException e){
+							Log.e("WeiboAnalyzer", e.getMessage());
+						}
 					}});
 				
 //				convertView.setTag(viewHolder);
