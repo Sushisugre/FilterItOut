@@ -41,16 +41,17 @@ public class OAuth2 {
 	public static Date lastUpdated;
     
     public OAuth2(Context context,WeiboAuthListener listener){
-    	this.context=context;
-    	this.listener=listener;
-        this.mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
-    	this.statusesAPI=new StatusesAPI(AccessTokenKeeper.readAccessToken(context));
+    	this.init(context, listener);
     }
     
     public OAuth2(Context context){
-    	//OAuth2(context,WeiboAuthListener listener);
+    	this.init(context, null);
+    }
+    
+    public void init(Context context,WeiboAuthListener listener){
     	this.context=context;
-    	this.listener= new AuthDialogListener(context);
+    	if(listener==null)
+    		this.listener= new AuthDialogListener(context);
         this.mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
     	this.statusesAPI=new StatusesAPI(AccessTokenKeeper.readAccessToken(context));
     }
