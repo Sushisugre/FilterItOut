@@ -51,7 +51,6 @@ public class WeiboSectionFragment extends Fragment{
 	 
 
 	public void onUpdateContent() {
-		Log.e("Update-List", "--------Test-------");
 
 		int section = this.getArguments().getInt(
 				HomeActivity.ARG_SECTION_NUMBER);
@@ -95,7 +94,7 @@ public class WeiboSectionFragment extends Fragment{
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.i("Get-View", "This is position:" + position);
+		//	Log.i("Get-View", "This is position:" + position);
 
 			ImageView userProfileImage;
 			TextView username;

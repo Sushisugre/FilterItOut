@@ -12,14 +12,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.api.FavoritesAPI;
 import com.weibo.sdk.android.api.StatusesAPI;
+import com.weibo.sdk.android.api.TagsAPI;
 import com.weibo.sdk.android.api.WeiboAPI.FEATURE;
 import com.weibo.sdk.android.net.RequestListener;
 
@@ -32,9 +33,11 @@ public class OAuth2 {
 	public static final Set<String> TOKEN_ERRORS = new HashSet<String>(Arrays.asList(new String[]{"21315","21327","21316","21317","21314"}));
 	
 	private static Weibo mWeibo;
-	private static Context context;
+	private static Context mContext;
 	private static WeiboAuthListener listener;
 	private static StatusesAPI statusesAPI;
+	private static TagsAPI tagsAPI;
+	private static FavoritesAPI favoritesAPI;
 	public static final String TAG = "OAuth2";
 	public static long sinceId=0;
 	public static long maxId=0;
@@ -49,24 +52,24 @@ public class OAuth2 {
     }
     
     public void init(Context context,WeiboAuthListener listener){
-    	this.context=context;
+    	mContext=context;
     	if(listener==null)
-    		this.listener= new AuthDialogListener(context);
-        this.mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
-    	this.statusesAPI=new StatusesAPI(AccessTokenKeeper.readAccessToken(context));
+    		listener= new AuthDialogListener(context);
+        mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
+    	statusesAPI=new StatusesAPI(AccessTokenKeeper.readAccessToken(context));
     }
     
     public void requestAccessToken(){
     	if(listener!=null)
-    		mWeibo.authorize(context, listener);
+    		mWeibo.authorize(mContext, listener);
     }
     
     public void refreshAccessToken(){
     	
     }
     
-    public static void storeAccessToken(String userId,Oauth2AccessToken accessToken){
-    	AccessTokenKeeper.keepAccessToken(context,accessToken,userId);
+    public static void storeAccessToken(long userId,Oauth2AccessToken accessToken){
+    	AccessTokenKeeper.keepAccessToken(mContext,accessToken,userId);
     }
     
     public void requestNewFriendStatus(RequestListener listener){
@@ -85,10 +88,32 @@ public class OAuth2 {
 		statusesAPI.publicTimeline(15, 1, false, listener);
     }
     
+    /**
+     * User tags
+     * @param listener
+     */
+    public void requestUserTags(RequestListener listener){
+		tagsAPI.tags(Long.parseLong(getUserId()), 20, 1, listener);
+    }
+    /**
+     * User favorite status tags
+     * @param listener
+     */
+    public void requestFavoriteTags(RequestListener listener){
+    	favoritesAPI.tags(20, 1, listener);
+    }
+    /**
+     * User favorite status
+     * @param listener
+     */
+    public void requestFavorites(RequestListener listener){
+    	favoritesAPI.favorites(50, 1, listener);
+    }
+    
     public static List<Status> parseResponse(String response){
     	
 		 List<Status> statusList=new ArrayList<Status>();
-		 Log.i("JSON Response", response);
+		// Log.i("JSON Response", response);
     	try{
     		JSONObject jsonResponse=new JSONObject(response);
     		//api error
@@ -163,7 +188,6 @@ public class OAuth2 {
             status.setAttitudesCount(obj.getInt("attitudes_count"));
             
            // Log.e("userIcon", u.getString("profile_image_url"));  
-          Log.e("Status Test", obj.getString("text"));
 
     	}
     	catch(JSONException e){
@@ -175,12 +199,12 @@ public class OAuth2 {
     }
     
     public static Oauth2AccessToken getAccessToken() {
-  		return AccessTokenKeeper.readAccessToken(context);
+  		return AccessTokenKeeper.readAccessToken(mContext);
   	}
 
 
   	public static String getUserId() {
-  		return AccessTokenKeeper.readUserId(context);
+  		return AccessTokenKeeper.readUserId(mContext);
   	}
 
 }

@@ -32,7 +32,7 @@ public class AuthorizeActivity extends Activity {
 		View diaView=View.inflate(this, R.layout.dialog, null);
 		dialog=new Dialog(AuthorizeActivity.this,R.style.dialog);
 		dialog.setContentView(diaView);
-		dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT,200);
+		dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		dialog.show();
 		
 		

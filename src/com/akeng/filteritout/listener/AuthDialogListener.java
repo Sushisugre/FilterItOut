@@ -24,7 +24,7 @@ public class AuthDialogListener implements WeiboAuthListener {
     public void onComplete(Bundle values) {
         String token = values.getString("access_token");
         String expires_in = values.getString("expires_in");
-        String user_id=values.getString("uid");
+        long user_id=values.getLong("uid");
         Oauth2AccessToken accessToken = new Oauth2AccessToken(token, expires_in);
         if (accessToken.isSessionValid()) {            	
         	OAuth2.storeAccessToken(user_id, accessToken);
@@ -54,6 +54,7 @@ public class AuthDialogListener implements WeiboAuthListener {
             //to homepage
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
     }
