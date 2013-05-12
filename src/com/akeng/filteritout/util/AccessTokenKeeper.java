@@ -17,10 +17,10 @@ public class AccessTokenKeeper {
 	 * @param context Activity 上下文环境
 	 * @param token Oauth2AccessToken
 	 */
-	public static void keepAccessToken(Context context, Oauth2AccessToken token,long uid) {
+	public static void keepAccessToken(Context context, Oauth2AccessToken token,String uid) {
 		SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
 		Editor editor = pref.edit();
-		editor.putLong("uid", uid);
+		editor.putString("uid", uid);
 		editor.putString("token", token.getToken());
 		editor.putLong("expiresTime", token.getExpiresTime());
 		editor.commit();

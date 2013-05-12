@@ -68,7 +68,7 @@ public class OAuth2 {
     	
     }
     
-    public static void storeAccessToken(long userId,Oauth2AccessToken accessToken){
+    public static void storeAccessToken(String userId,Oauth2AccessToken accessToken){
     	AccessTokenKeeper.keepAccessToken(mContext,accessToken,userId);
     }
     

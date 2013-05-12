@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -88,6 +89,10 @@ public class TagActivity extends Activity{
 				}
 				dataHelper.Close();
 				
+				//TODO: resume home activity?
+	            Intent intent = new Intent();
+	            intent.setClass(TagActivity.this, HomeActivity.class);
+	            TagActivity.this.startActivity(intent);
 			}
 		});
 		
