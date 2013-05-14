@@ -29,7 +29,8 @@ import com.akeng.filteritout.util.DataHelper;
 
 public class TagActivity extends Activity{
 	
-	private GridView tagGridview;
+	private GridView favorGridview;
+	private GridView dislikeGridview;
 	private String userId;
 	private static final List<String> categories=Arrays.asList("美食", "电影", "财经","互联网","星座","文学","扯淡");
 	
@@ -43,11 +44,15 @@ public class TagActivity extends Activity{
 		userId=AccessTokenKeeper.readUserId(TagActivity.this);
 
 		
-		tagGridview = (GridView) findViewById(R.id.taggridview);
-		tagGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
-		tagGridview.setAdapter(new GridAdapter(TagActivity.this));
+		favorGridview = (GridView) findViewById(R.id.favor);
+		favorGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+		favorGridview.setAdapter(new GridAdapter(TagActivity.this,Tag.FAVOR));
+		
+		dislikeGridview = (GridView) findViewById(R.id.dislike);
+		dislikeGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+		dislikeGridview.setAdapter(new GridAdapter(TagActivity.this,Tag.DISLIKE));
 		//TODO: that's interting
-//		tagGridview.setOnItemClickListener(new OnItemClickListener(){
+//		favorGridview.setOnItemClickListener(new OnItemClickListener(){
 //
 //			@Override
 //			public void onItemClick(AdapterView<?> parent, View v, int position,
@@ -70,11 +75,11 @@ public class TagActivity extends Activity{
 				dataHelper.clearAllTags();
 				
 				//add checked item to database
-				for(int i=0;i<tagGridview.getCount();i++){
+				for(int i=0;i<favorGridview.getCount();i++){
 					
-					boolean isChecked=tagGridview.getCheckedItemPositions().get(i);
+					boolean isChecked=favorGridview.getCheckedItemPositions().get(i);
 					
-					TagView item=(TagView)tagGridview.getChildAt(i).findViewById(R.id.tag_name);
+					TagView item=(TagView)favorGridview.getChildAt(i).findViewById(R.id.tag_name);
 					String tagName=item.getText().toString();
 					isChecked=item.isChecked();
 					Log.i("is Checked", "Position "+i+":"+isChecked);
@@ -85,7 +90,23 @@ public class TagActivity extends Activity{
 						}
 						dataHelper.addTag(userId,tagName,Tag.FAVOR);	
 					}
+				}
+				
+				for(int i=0;i<dislikeGridview.getCount();i++){
 					
+					boolean isChecked=dislikeGridview.getCheckedItemPositions().get(i);
+					
+					TagView item=(TagView)dislikeGridview.getChildAt(i).findViewById(R.id.tag_name);
+					String tagName=item.getText().toString();
+					isChecked=item.isChecked();
+					Log.i("is Checked", "Position "+i+":"+isChecked);
+					
+					if(isChecked){
+						if(userId==""){
+						//TODO:
+						}
+						dataHelper.addTag(userId,tagName,Tag.DISLIKE);	
+					}
 				}
 				dataHelper.Close();
 				
@@ -108,17 +129,19 @@ public class TagActivity extends Activity{
 	
 	public class GridAdapter extends BaseAdapter{
 		private Context mContext;
+		private int mType;
 		private List<String> tags;
 		private int tagNum=0; //record origin user tag number
 		
-		public GridAdapter(Context c) {
+		public GridAdapter(Context c,int type) {
 	        mContext = c;
+	        mType=type;
 	        
 	        tags=new ArrayList<String>();
 	        
 	        //get user tags from db
 	        DataHelper dataHelper=new DataHelper(TagActivity.this);
-	        List<Tag> userTags=dataHelper.getUserTags(userId, Tag.FAVOR);
+	        List<Tag> userTags=dataHelper.getUserTags(userId, type);
 	        dataHelper.Close();
 	        
 	        if(userTags!=null){
@@ -131,10 +154,18 @@ public class TagActivity extends Activity{
 
 	        Log.i("tag num", "Num "+tagNum);
 	        //add some default category
-	        if(tagNum<7){
+	        if(Tag.FAVOR==type&&tagNum<7){
 	        	for(String cat:categories){
 	        		if(!tags.contains(cat))
 	        			tags.add(cat);
+	        	}
+	        		
+	        }
+	        
+	        if(Tag.DISLIKE==type&&tagNum<7){
+	        	for(String cat:categories){
+	        		if(!tags.contains("傻×"))
+	        			tags.add("傻×");
 	        	}
 	        		
 	        }

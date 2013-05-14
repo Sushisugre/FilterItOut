@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
@@ -13,14 +12,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.lucene.analysis.Analyzer;
-import org.fnlp.app.keyword.Extractor;
-import org.fnlp.app.keyword.WordExtract;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import android.util.Log;
-
-import edu.fudan.nlp.cn.tag.CWSTagger;
-import edu.fudan.nlp.corpus.StopWords;
-import edu.fudan.util.exception.LoadModelException;
 
 public class WeiboAnalyzer {
 	
@@ -48,15 +44,10 @@ public class WeiboAnalyzer {
 
 
 	public static void splitStatus(String text)throws IOException{
-		// Analyzer ikAnalyzer = new IKAnalyzer();  
+		 Analyzer ikAnalyzer = new IKAnalyzer();  
 	        System.out.println("======中文=======IKAnalyzer======分词=======");  
-	        showToken(null, text);  
+	        showToken(ikAnalyzer, text);  
 	        System.out.println("======中文=======IKAnalyzer======分词=======");  
-	        
-//	        Analyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_30);  
-//	        System.out.println("=====一元========StandardAnalyzer=====分词========"); 
-//	        showToken(standardAnalyzer, text); 
-//	        System.out.println("=====一元========StandardAnalyzer=====分词========"); 
 
 	}
 	
@@ -68,23 +59,23 @@ public class WeiboAnalyzer {
      */  
     public static void showToken(Analyzer analyzer, String text) throws IOException {  
           
-       // Reader reader = new StringReader(text);  
-       // TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
+        Reader reader = new StringReader(text);  
+        TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
         
-       //CharTermAttribute  ctermAtt  = (CharTermAttribute )stream.getAttribute(CharTermAttribute.class);  
-       // TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
-        // 循环打印出分词的结果
+      // CharTermAttribute  ctermAtt  = (CharTermAttribute )stream.getAttribute(CharTermAttribute.class);  
+        TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
+       //  循环打印出分词的结果
 //        while(stream.incrementToken()){  
 //            System.out.print((new String(ctermAtt.buffer())).trim() + "|");   
 //        }  
 //        System.out.println();
         
         Log.i("key words", text);
-		 System.out.println(nlp("seg",text));
+		 System.out.println(nlp("key",text));
         
-//        while(stream.incrementToken()){  
-//            System.out.print(termAtt.term() + "|");  
-//        }  
-//        System.out.println();
+        while(stream.incrementToken()){  
+            System.out.print(termAtt.term() + "|");  
+        }  
+        System.out.println();
     }  
 }

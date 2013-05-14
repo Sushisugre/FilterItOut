@@ -145,13 +145,7 @@ public class WeiboSectionFragment extends Fragment{
 						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
 						intent.putExtra("text", status.getText());
 						v.getContext().startService(intent);
-//						//test split word
-//						try{
-//						WeiboAnalyzer.splitStatus(status.getText());
-//						}
-//						catch(IOException e){
-//							Log.e("WeiboAnalyzer", e.getMessage());
-//						}
+
 					}});
 				
 //				convertView.setTag(viewHolder);
