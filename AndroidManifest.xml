@@ -43,6 +43,8 @@
             android:name="com.akeng.filteritout.main.TagActivity"
             android:label="@string/title_activity_tag" >
         </activity>
+        <service android:name="com.akeng.filteritout.main.TextAnalysisService">
+        </service>
     </application>
 
 </manifest>

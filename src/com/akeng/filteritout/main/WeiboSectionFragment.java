@@ -1,12 +1,11 @@
 package com.akeng.filteritout.main;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.util.OAuth2;
-import com.akeng.filteritout.util.WeiboAnalyzer;
 
 
 public class WeiboSectionFragment extends Fragment{
@@ -144,13 +142,16 @@ public class WeiboSectionFragment extends Fragment{
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
 						
-						//test split word
-						try{
-						WeiboAnalyzer.splitStatus(status.getText());
-						}
-						catch(IOException e){
-							Log.e("WeiboAnalyzer", e.getMessage());
-						}
+						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
+						intent.putExtra("text", status.getText());
+						v.getContext().startService(intent);
+//						//test split word
+//						try{
+//						WeiboAnalyzer.splitStatus(status.getText());
+//						}
+//						catch(IOException e){
+//							Log.e("WeiboAnalyzer", e.getMessage());
+//						}
 					}});
 				
 //				convertView.setTag(viewHolder);
