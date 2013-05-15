@@ -19,8 +19,8 @@
     <string name="no_more_new">没有新的微博</string>
     <string name="new_statuses">条新的微博</string>
     <string name="title_activity_tag">TagActivity</string>
-    <drawable name="red">#ff0000</drawable>
+    <drawable name="red">#F55722</drawable>
     <color name="gray">#999999</color>
-    <color name="blue">#0000ff</color>
+    <color name="blue">#03D3FC</color>
 
 </resources>

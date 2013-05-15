@@ -148,7 +148,7 @@ public class WeiboSectionFragment extends Fragment{
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
 						
-						//statusList.remove(statusPosition);
+						
 						//TODO : save to database
 						
 						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
@@ -156,6 +156,7 @@ public class WeiboSectionFragment extends Fragment{
 						v.getContext().startService(intent);
 						
 						//delete the status
+						statusList.remove(statusPosition);
 						updateList();
 
 					}});
