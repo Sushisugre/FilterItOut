@@ -61,12 +61,16 @@ public class WeiboSectionFragment extends Fragment{
 		if (section == HomeActivity.SECTION_RECOMMENDS)
 			statusList = HomeActivity.publicStatusList;
 		
-		HeaderViewListAdapter ha = (HeaderViewListAdapter) statusListView.getAdapter();
-		StatusAdapter adapter=(StatusAdapter)ha.getWrappedAdapter();
-				adapter.notifyDataSetChanged();
+		updateList();
 		//statusListView.setSelectionAfterHeaderView();
 				statusListView.finishFootView();
 
+	}
+	
+	public void updateList(){
+		HeaderViewListAdapter ha = (HeaderViewListAdapter) statusListView.getAdapter();
+		StatusAdapter adapter=(StatusAdapter)ha.getWrappedAdapter();
+				adapter.notifyDataSetChanged();
 	}
 	
 
@@ -103,6 +107,8 @@ public class WeiboSectionFragment extends Fragment{
 			ImageButton btnDelete;
 			
 			Status status = (Status) getItem(position);
+			if(status.isDeleted()==true)
+				return null;
 
 //			if (convertView == null) {
 				convertView = View.inflate(parent.getContext(), R.layout.weibo,null);
@@ -142,9 +148,15 @@ public class WeiboSectionFragment extends Fragment{
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
 						
+						//statusList.remove(statusPosition);
+						//TODO : save to database
+						
 						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
 						intent.putExtra("text", status.getText());
 						v.getContext().startService(intent);
+						
+						//delete the status
+						updateList();
 
 					}});
 				

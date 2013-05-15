@@ -159,7 +159,7 @@ public class HomeActivity extends FragmentActivity implements
 				//if token expired, go to authorizeActivity to refresh it
 			if(OAuth2.TOKEN_ERRORS.contains(errorCode)){
 	            Intent intent = new Intent();
-	            intent.setClass(this, HomeActivity.class);
+	            intent.setClass(this, AuthorizeActivity.class);
 	            startActivity(intent);
 	            this.finish();
 			}

@@ -43,12 +43,22 @@ public class WeiboAnalyzer {
 
 
 
-	public static void splitStatus(String text)throws IOException{
+	public static String splitStatus(String text)throws IOException{
 		 Analyzer ikAnalyzer = new IKAnalyzer();  
-	        System.out.println("======中文=======IKAnalyzer======分词=======");  
-	        showToken(ikAnalyzer, text);  
-	        System.out.println("======中文=======IKAnalyzer======分词=======");  
-
+	     return showToken(ikAnalyzer, cleanUpText(text));  
+	}
+	
+	/**
+	 * 除去用户名以及短链接
+	 * @param text
+	 * @return
+	 */
+	private static String cleanUpText(String text){
+		String cleanText;
+		cleanText=text.replaceAll("(//@)\\S+:", " ");
+		cleanText=cleanText.replaceAll("(@)\\S+\\s", " ");
+		cleanText=cleanText.replaceAll("(http://t\\.cn/)\\S{6}", " ");
+		return cleanText;
 	}
 	
     /** 
@@ -57,7 +67,7 @@ public class WeiboAnalyzer {
      * @param text         要分词的字符串 
      * @throws IOException 抛出的异常 
      */  
-    public static void showToken(Analyzer analyzer, String text) throws IOException {  
+    public static String showToken(Analyzer analyzer, String text) throws IOException {  
           
         Reader reader = new StringReader(text);  
         TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
@@ -70,12 +80,23 @@ public class WeiboAnalyzer {
 //        }  
 //        System.out.println();
         
-        Log.i("key words", text);
-		 System.out.println(nlp("key",text));
-        
-        while(stream.incrementToken()){  
-            System.out.print(termAtt.term() + "|");  
+        Log.i("Processed Text", text);
+        System.out.println("After tokenize:"+nlp("pos",text)); 
+        System.out.println("Before tokenize:"+nlp("key",text));
+		
+        String tokens="";
+        while(stream.incrementToken()){
+        	String term=termAtt.term();	
+        	tokens=tokens+term+" ";
+            System.out.print(term+"|"); 
         }  
         System.out.println();
+        stream.close();
+        reader.close();
+        
+        System.out.println("After tokenize:"+nlp("pos",tokens));
+        System.out.println("After tokenize:"+nlp("key",tokens));
+        
+        return tokens;
     }  
 }
