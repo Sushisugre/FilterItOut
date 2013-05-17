@@ -10,16 +10,39 @@
     android:id="@+id/favor"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
-    android:columnWidth="90dp"
     android:numColumns="auto_fit"
-    android:verticalSpacing="6dp"
-    android:horizontalSpacing="6dp"
+    android:columnWidth="90dp"
+    android:verticalSpacing="5dp"
+    android:horizontalSpacing="5dp"
     android:stretchMode="columnWidth"
     android:gravity="center"
     android:layout_marginTop="20dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
 	/>
+    
+	<EditText android:id="@+id/input_like"
+	android:layout_width="180dp"
+	android:layout_height="60dp"
+	android:layout_below="@+id/favor"
+	android:layout_toLeftOf="@+id/add_like"
+	android:layout_marginTop="15dp"
+	android:layout_marginLeft="20dp"
+	
+	/>
+     
+    <ImageButton
+        android:id="@+id/add_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/input_like"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="20dp"
+		android:background="@null"
+        android:src="@drawable/btn_add" >
+    </ImageButton>
     
         <GridView xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/dislike"
@@ -31,22 +54,47 @@
     android:horizontalSpacing="6dp"
     android:stretchMode="columnWidth"
     android:gravity="center"
-    android:layout_below="@+id/favor"
-    android:layout_marginTop="50dp"
+    android:layout_below="@+id/input_like"
+    android:layout_marginTop="30dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
 	/>
+        
+    <EditText android:id="@+id/input_dislike"
+	android:layout_width="180dp"
+	android:layout_height="60dp"
+	android:layout_below="@+id/dislike"
+	android:layout_toLeftOf="@+id/add_dislike"
+	android:layout_marginTop="15dp"
+	android:layout_marginLeft="20dp"
+	
+	/>
+     
+    <ImageButton
+        android:id="@+id/add_dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/input_dislike"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="20dp"
+		android:background="@null"
+        android:src="@drawable/btn_add" >
+    </ImageButton>
+
     
     <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
      android:id="@+id/save_tags" 
-     android:layout_width="80dp" 
-     android:layout_height="60dp" 
+     android:layout_width="wrap_content" 
+     android:layout_height="wrap_content" 
      android:text="@string/save"
      android:layout_centerHorizontal="true"
      android:layout_alignParentBottom="true"
      android:layout_marginBottom="20dp"
-     >
+     android:background="@null"
+     android:src="@drawable/btn_back"
+     />
         
-    </ImageButton>
 
 </RelativeLayout>

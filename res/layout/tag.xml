@@ -8,9 +8,11 @@
                 android:id="@+id/tag_name"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_alignParentLeft="true"
                 android:gravity="center"
-                android:textColor="#424952"
+                android:textColor="@color/tag_text"
                 android:textSize="25sp" 
                 android:focusable="false"
                 android:background="@drawable/tag">

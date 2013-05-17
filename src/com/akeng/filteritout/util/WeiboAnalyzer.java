@@ -44,7 +44,7 @@ public class WeiboAnalyzer {
 
 
 	public static String splitStatus(String text)throws IOException{
-		 Analyzer ikAnalyzer = new IKAnalyzer();  
+		 Analyzer ikAnalyzer = new IKAnalyzer(true);  
 	     return showToken(ikAnalyzer, cleanUpText(text));  
 	}
 	

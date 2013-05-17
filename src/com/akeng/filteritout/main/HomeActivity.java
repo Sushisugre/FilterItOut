@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.akeng.filteritout.R;
@@ -55,10 +56,13 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		
-		//TODO: activity use action bar without title
-		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);	
+//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);	
+		this.getActionBar().setDisplayShowHomeEnabled(false);
+		this.getActionBar().setDisplayShowTitleEnabled(false);
+
 		setContentView(R.layout.activity_home);
 		
 		View layout=findViewById(R.id.pager);
@@ -177,6 +181,9 @@ public class HomeActivity extends FragmentActivity implements
 		else if (section == SECTION_RECOMMENDS) 
 			this.addToList(publicStatusList, newList);
 	
+		//TODO recommend module
+		
+		//notify weibosection to update views
 		this.updateSection(section);
 	
 		//toast shows the new loaded number
@@ -245,11 +252,6 @@ public class HomeActivity extends FragmentActivity implements
 			     public void run() {
 			    	 WeiboSectionFragment frament=(WeiboSectionFragment)getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section));
 					frament.onUpdateContent();
-						
-//			    	 ListView statusList = (ListView) 
-//								getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section)).
-//								getView().findViewById(R.id.Msglist);	
-//						statusList.invalidateViews();
 			    }
 			});
 

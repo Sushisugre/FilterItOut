@@ -2,7 +2,6 @@ package com.akeng.filteritout.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,12 +13,9 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Tag;
@@ -164,8 +160,10 @@ public class TagActivity extends Activity{
 	        
 	        if(Tag.DISLIKE==type&&tagNum<7){
 	        	for(String cat:categories){
-	        		if(!tags.contains("傻×"))
-	        			tags.add("傻×");
+	        		if(!tags.contains("中奖")){
+	        			tags.add("中奖");
+	        			tags.add("淘宝");
+	        		}
 	        	}
 	        		
 	        }

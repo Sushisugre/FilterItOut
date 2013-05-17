@@ -48,7 +48,7 @@ public class OAuth2 {
     }
     
     public OAuth2(Context context){
-    	this.init(context, null);
+    	this.init(context, new AuthDialogListener(context));
     }
     
     public void init(Context context,WeiboAuthListener listener){
@@ -60,8 +60,13 @@ public class OAuth2 {
     }
     
     public void requestAccessToken(){
-    	if(listener!=null)
+    	if(listener==null){
+    		listener= new AuthDialogListener(mContext);
+    	}
+		System.out.println("request access token");
+
     		mWeibo.authorize(mContext, listener);
+    	
     }
     
     public void refreshAccessToken(){

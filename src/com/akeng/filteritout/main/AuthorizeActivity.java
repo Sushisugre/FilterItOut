@@ -44,6 +44,7 @@ public class AuthorizeActivity extends Activity {
             @Override
             public void onClick(View arg0) {
             	
+            	System.out.println("on click");
             	//TODO: what if auth fail
             	dialog.dismiss();
 
@@ -52,6 +53,18 @@ public class AuthorizeActivity extends Activity {
             }
             
         });
+		
+//		btnStart.setOnTouchListener(new OnTouchListener(){
+//
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				
+//            	dialog.dismiss();
+//                oauth.requestAccessToken();
+//				return true;
+//			}
+//			
+//		});
 	}
 	
 
