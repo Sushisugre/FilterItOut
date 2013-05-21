@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.entity.UserInfo;
 
@@ -14,6 +15,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 	//save the table name of UserID,Access Token,Access Secret
 	public static final String TB_USER="users";
 	public static final String TB_TAGS="tags";
+	public static final String TB_STATUS="tags";
 
 	
 	public SqliteHelper(Context context, String name, CursorFactory factory,
@@ -41,6 +43,16 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 Tag.TYPE+" integer,"+
                 Tag.TIME+" integer,"+
                 "foreign key ("+Tag.USERID+") "+"references "+TB_USER+" ("+UserInfo.USERID+"));"
+                );
+		
+		db.execSQL("CREATE TABLE IF NOT EXISTS "+
+				TB_STATUS+"("+
+                Status.ID+" integer primary key,"+
+                Status.USERID+" varchar,"+
+                Status.KEYS+" varchar,"+
+                Status.TYPE+" integer,"+
+                Status.TIME+" integer,"+
+                "foreign key ("+Status.USERID+") "+"references "+TB_USER+" ("+UserInfo.USERID+"));"
                 );
 		
         Log.e("Database","onCreate");
