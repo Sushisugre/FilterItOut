@@ -1,6 +1,15 @@
 package com.akeng.filteritout.entity;
 
 public class Status {
+	
+	public static final String ID="id";
+	public static final String USERID="user_id";
+	public static final String KEYS="keys";
+	public static final String TYPE="type";
+	public static final String TIME="time";
+	public static final int FAVOR = 0;
+	public static final int DISLIKE = 1;
+	
     private long id;
     private String text;
     private String time;

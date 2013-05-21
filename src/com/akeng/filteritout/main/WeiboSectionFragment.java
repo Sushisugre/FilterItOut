@@ -139,6 +139,12 @@ public class WeiboSectionFragment extends Fragment{
 						Status status=statusList.get(statusPosition);
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
+						
+						//ToDO
+						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
+						intent.putExtra("text", status.getText());
+						intent.putExtra("type", 0);
+						v.getContext().startService(intent);
 					}});
 				
 				btnDelete.setOnClickListener(new OnClickListener(){

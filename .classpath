@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="libs/weibo.sdk.android.sso.jar"/>
 	<classpathentry kind="lib" path="libs/IKAnalyzer2012_u6.jar"/>
 	<classpathentry kind="lib" path="libs/lucene-core-3.6.2.jar"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
