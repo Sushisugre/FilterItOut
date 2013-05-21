@@ -52,6 +52,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 Status.KEYS+" varchar,"+
                 Status.TYPE+" integer,"+
                 Status.TIME+" integer,"+
+                Status.TEXT+" varchar,"+
                 "foreign key ("+Status.USERID+") "+"references "+TB_USER+" ("+UserInfo.USERID+"));"
                 );
 		

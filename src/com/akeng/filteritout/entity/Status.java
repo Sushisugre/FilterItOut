@@ -7,6 +7,11 @@ public class Status {
 	public static final String KEYS="keys";
 	public static final String TYPE="type";
 	public static final String TIME="time";
+	public static final String TEXT="text";
+	public static final String USERNAME="username";
+	public static final String PICTURE="picture";
+	public static final String THUMB="thumb";
+	public static final String RETWEETED="rt_id";
 	public static final int FAVOR = 0;
 	public static final int DISLIKE = 1;
 	

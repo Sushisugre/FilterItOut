@@ -5,8 +5,20 @@
     android:id="@+id/layout_tag"
     tools:context=".TagActivity"
      >
+     
+    <TextView 
+     android:id="@+id/text_favor"
+     android:layout_width="fill_parent" 
+     android:layout_height="wrap_content"
+     android:text="感兴趣"
+     android:textSize="15sp"
+     android:layout_marginLeft="5dp"
+     android:paddingLeft="10dp"
+     android:layout_marginTop="10dp"
+     android:background="@color/white"     
+     />
 
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android" 
+    <GridView 
     android:id="@+id/favor"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
@@ -16,17 +28,18 @@
     android:horizontalSpacing="5dp"
     android:stretchMode="columnWidth"
     android:gravity="center"
-    android:layout_marginTop="20dp"
+    android:layout_below="@+id/text_favor"
+    android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
 	/>
     
 	<EditText android:id="@+id/input_like"
 	android:layout_width="180dp"
-	android:layout_height="60dp"
+	android:layout_height="50dp"
 	android:layout_below="@+id/favor"
 	android:layout_toLeftOf="@+id/add_like"
-	android:layout_marginTop="15dp"
+	android:layout_marginTop="5dp"
 	android:layout_marginLeft="20dp"
 	
 	/>
@@ -44,7 +57,20 @@
         android:src="@drawable/btn_add" >
     </ImageButton>
     
-        <GridView xmlns:android="http://schemas.android.com/apk/res/android" 
+        <TextView 
+     android:id="@+id/text_dislike"
+     android:layout_width="fill_parent" 
+     android:layout_height="wrap_content"
+     android:text="不想看到"
+     android:textSize="15sp"
+     android:layout_below="@+id/input_like"
+     android:layout_marginLeft="5dp"
+     android:paddingLeft="10dp"
+     android:layout_marginTop="10dp"
+     android:background="@color/white"
+     />
+    
+        <GridView  
     android:id="@+id/dislike"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
@@ -54,20 +80,19 @@
     android:horizontalSpacing="6dp"
     android:stretchMode="columnWidth"
     android:gravity="center"
-    android:layout_below="@+id/input_like"
-    android:layout_marginTop="30dp"
+    android:layout_below="@+id/text_dislike"
+    android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
 	/>
         
     <EditText android:id="@+id/input_dislike"
 	android:layout_width="180dp"
-	android:layout_height="60dp"
+	android:layout_height="50dp"
 	android:layout_below="@+id/dislike"
 	android:layout_toLeftOf="@+id/add_dislike"
-	android:layout_marginTop="15dp"
+	android:layout_marginTop="5dp"
 	android:layout_marginLeft="20dp"
-	
 	/>
      
     <ImageButton
@@ -84,7 +109,7 @@
     </ImageButton>
 
     
-    <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    <ImageButton 
      android:id="@+id/save_tags" 
      android:layout_width="wrap_content" 
      android:layout_height="wrap_content" 
