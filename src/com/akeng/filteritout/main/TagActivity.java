@@ -2,6 +2,7 @@ package com.akeng.filteritout.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,11 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
@@ -27,7 +29,11 @@ public class TagActivity extends Activity{
 	
 	private GridView favorGridview;
 	private GridView dislikeGridview;
+	private EditText newLike;
+	private EditText newDislike;
 	private String userId;
+	private List<Tag> likeTags;
+	private List<Tag> dislikeTags;
 	private static final List<String> categories=Arrays.asList("美食", "电影", "财经","互联网","星座","文学","扯淡");
 	
 	@Override
@@ -38,15 +44,91 @@ public class TagActivity extends Activity{
 		View layout=findViewById(R.id.layout_tag);
 		AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
 		userId=AccessTokenKeeper.readUserId(TagActivity.this);
-
+		
+		
+        //get user tags from db
+        DataHelper dataHelper=new DataHelper(TagActivity.this);
+        likeTags=dataHelper.getUserTags(userId, Tag.FAVOR);
+        dislikeTags=dataHelper.getUserTags(userId, Tag.DISLIKE);
+        dataHelper.Close();
+        
+        
+        if(likeTags==null)
+        	likeTags=new ArrayList<Tag>();
+        if(dislikeTags==null)
+        	dislikeTags=new ArrayList<Tag>();
+		
+        newLike=(EditText)findViewById(R.id.input_like);
+        newDislike=(EditText)findViewById(R.id.input_dislike);
+        
 		
 		favorGridview = (GridView) findViewById(R.id.favor);
 		favorGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
 		favorGridview.setAdapter(new GridAdapter(TagActivity.this,Tag.FAVOR));
 		
+		
 		dislikeGridview = (GridView) findViewById(R.id.dislike);
 		dislikeGridview.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
 		dislikeGridview.setAdapter(new GridAdapter(TagActivity.this,Tag.DISLIKE));
+        
+		ImageButton btnAddLike=(ImageButton)findViewById(R.id.add_like);
+		btnAddLike.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				String newTag=newLike.getText().toString();
+				if(newTag!=""){
+					Tag tag=new Tag();
+					tag.setUserId(userId);
+					tag.setTagName(newTag);
+					tag.setType(Tag.FAVOR);
+					tag.setTime((new Date()).getTime());
+					tag.setSelected(true);
+					
+					if(likeTags==null)
+						likeTags=new ArrayList<Tag>();
+					likeTags.add(tag);
+					
+					GridAdapter adapter=(GridAdapter)favorGridview.getAdapter();
+					adapter.notifyDataSetChanged();
+					newLike.setText("");
+					
+					InputMethodManager imm = (InputMethodManager)getSystemService(
+						      Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(newLike.getWindowToken(), 0);					
+				}
+			}
+		});
+		
+		ImageButton btnAddDislike=(ImageButton)findViewById(R.id.add_dislike);
+		btnAddDislike.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				String newTag=newDislike.getText().toString();
+				if(newTag!=""){
+					Tag tag=new Tag();
+					tag.setUserId(userId);
+					tag.setTagName(newTag);
+					tag.setType(Tag.DISLIKE);
+					tag.setTime((new Date()).getTime());
+					tag.setSelected(true);
+					
+					if(dislikeTags==null)
+						dislikeTags=new ArrayList<Tag>();
+					dislikeTags.add(tag);
+					
+					GridAdapter adapter=(GridAdapter)dislikeGridview.getAdapter();
+					adapter.notifyDataSetChanged();
+					newDislike.setText("");
+					
+					InputMethodManager imm = (InputMethodManager)getSystemService(
+						      Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(newDislike.getWindowToken(), 0);
+				}				
+			}
+		});
+
+
+		
 		//TODO: that's interting
 //		favorGridview.setOnItemClickListener(new OnItemClickListener(){
 //
@@ -114,56 +196,41 @@ public class TagActivity extends Activity{
 		});
 		
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_tag, menu);
-		return true;
-	}
 	
 	
 	public class GridAdapter extends BaseAdapter{
 		private Context mContext;
 		private int mType;
-		private List<String> tags;
+		private List<Tag> tags;
 		private int tagNum=0; //record origin user tag number
 		
 		public GridAdapter(Context c,int type) {
 	        mContext = c;
 	        mType=type;
 	        
-	        tags=new ArrayList<String>();
+	        List<String> tagNames=null;
 	        
-	        //get user tags from db
-	        DataHelper dataHelper=new DataHelper(TagActivity.this);
-	        List<Tag> userTags=dataHelper.getUserTags(userId, type);
-	        dataHelper.Close();
+	        if(type==Tag.FAVOR)
+	        	tags=likeTags;
+	        if(type==Tag.DISLIKE)
+	        	tags=dislikeTags;
 	        
-	        if(userTags!=null){
-		        tagNum=userTags.size();
-		        
-		        for(Tag tag:userTags){
-		        	tags.add(tag.getTagName());
-		        }	
-	        }
+		    tagNum=tags.size();	
 
 	        Log.i("tag num", "Num "+tagNum);
 	        //add some default category
-	        if(Tag.FAVOR==type&&tagNum<7){
+	        if(Tag.FAVOR==type&&tagNum<4){
 	        	for(String cat:categories){
 	        		if(!tags.contains(cat))
-	        			tags.add(cat);
+	        			tags.add(new Tag(cat,Tag.UNSELECTED));
 	        	}
 	        		
 	        }
 	        
 	        if(Tag.DISLIKE==type&&tagNum<7){
-	        	for(String cat:categories){
 	        		if(!tags.contains("中奖")){
-	        			tags.add("中奖");
-	        			tags.add("淘宝");
-	        		}
+	        			tags.add(new Tag("中奖",Tag.UNSELECTED));
+	        			tags.add(new Tag("淘宝",Tag.UNSELECTED));
 	        	}
 	        		
 	        }
@@ -185,30 +252,29 @@ public class TagActivity extends Activity{
 		public long getItemId(int arg0) {
 			return 0;
 		}
+		
 
 		@Override //no scroll, only call once for each item
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TagView tagText;
-			
+			Tag tag=tags.get(position);
 			if (convertView == null) {
 				convertView = View.inflate(parent.getContext(), R.layout.tag,null);
 			}
 		
 			tagText = (TagView) convertView.findViewById(R.id.tag_name);
-			tagText.setText(tags.get(position));
+			tagText.setText(tag.getTagName());
 			tagText.setOnClickListener(new OnClickListener(){
-
 				@Override
 				public void onClick(View v) {
 					
 					TagView tagText = (TagView) v;
 					tagText.toggle();
 				}
-				
 			});
 
 			
-			if(position<=tagNum-1){
+			if(tag.isSelected()){
 				tagText.setChecked(true);
 			}
 			

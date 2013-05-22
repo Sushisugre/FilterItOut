@@ -245,7 +245,6 @@ public class HomeActivity extends FragmentActivity implements
 	}
 	
 	public void updateSection(final int section){
-		Log.e("Update-List", "--------Test Update Section-------");
 
 			this.runOnUiThread(new Runnable() {
 				

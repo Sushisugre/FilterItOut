@@ -128,6 +128,7 @@ public class DataHelper {
 	        	tag.setUserId(userId);
 	        	tag.setType(type);
 	        	tag.setTime(cursor.getLong(4));
+	        	tag.setSelected(true);
 	        	
 	        	tags.add(tag);
 

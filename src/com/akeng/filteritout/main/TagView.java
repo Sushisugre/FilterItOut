@@ -6,10 +6,6 @@ import android.util.Log;
 import android.widget.Checkable;
 import android.widget.TextView;
 
-import com.akeng.filteritout.R;
-import com.akeng.filteritout.entity.Tag;
-import com.akeng.filteritout.util.AccessTokenKeeper;
-import com.akeng.filteritout.util.DataHelper;
 
 public class TagView extends TextView implements Checkable{
 

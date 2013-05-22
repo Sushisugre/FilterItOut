@@ -9,6 +9,8 @@ public class Tag {
 	public static final String TIME="time";
 	public static final int FAVOR = 0;
 	public static final int DISLIKE = 1;
+	public static final int UNSELECTED = 2;
+
 	
 	public enum TagType {favor,dislike};
 	
@@ -17,8 +19,13 @@ public class Tag {
 	private String tagName;
 	private int type;
 	private long time;
+	private boolean isSelected=false;
 	
 	public Tag(){}
+	public Tag(String name,int type){
+		this.tagName=name;
+		this.type=type;
+	}
 	
 	public String getId() {
 		return id;
@@ -51,6 +58,12 @@ public class Tag {
 
 	public void setTime(long time) {
 		this.time = time;
+	}
+	public boolean isSelected() {
+		return isSelected;
+	}
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 	
 	

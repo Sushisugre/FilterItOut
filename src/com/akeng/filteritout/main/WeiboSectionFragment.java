@@ -63,7 +63,7 @@ public class WeiboSectionFragment extends Fragment{
 		
 		updateList();
 		//statusListView.setSelectionAfterHeaderView();
-				statusListView.finishFootView();
+		statusListView.finishFootView();
 
 	}
 	
