@@ -9,10 +9,6 @@ public class Tag {
 	public static final String TIME="time";
 	public static final int FAVOR = 0;
 	public static final int DISLIKE = 1;
-	public static final int UNSELECTED = 2;
-
-	
-	public enum TagType {favor,dislike};
 	
 	private String id;
 	private String userId;

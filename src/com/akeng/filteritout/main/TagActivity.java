@@ -200,13 +200,11 @@ public class TagActivity extends Activity{
 	
 	public class GridAdapter extends BaseAdapter{
 		private Context mContext;
-		private int mType;
 		private List<Tag> tags;
 		private int tagNum=0; //record origin user tag number
 		
 		public GridAdapter(Context c,int type) {
 	        mContext = c;
-	        mType=type;
 	        
 	        List<String> tagNames=null;
 	        
@@ -222,17 +220,14 @@ public class TagActivity extends Activity{
 	        if(Tag.FAVOR==type&&tagNum<4){
 	        	for(String cat:categories){
 	        		if(!tags.contains(cat))
-	        			tags.add(new Tag(cat,Tag.UNSELECTED));
+	        			tags.add(new Tag(cat,Tag.FAVOR));
 	        	}
 	        		
 	        }
 	        
-	        if(Tag.DISLIKE==type&&tagNum<7){
-	        		if(!tags.contains("中奖")){
-	        			tags.add(new Tag("中奖",Tag.UNSELECTED));
-	        			tags.add(new Tag("淘宝",Tag.UNSELECTED));
-	        	}
-	        		
+	        if(Tag.DISLIKE==type&&tagNum==0){
+	        	tags.add(new Tag("中奖",Tag.DISLIKE));
+	        	tags.add(new Tag("淘宝",Tag.DISLIKE));
 	        }
 	        
 	        		

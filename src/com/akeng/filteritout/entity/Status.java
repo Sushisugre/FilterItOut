@@ -14,6 +14,7 @@ public class Status {
 	public static final String RETWEETED="rt_id";
 	public static final int FAVOR = 0;
 	public static final int DISLIKE = 1;
+	public static final int NORMAL = 2;
 	
     private long id;
     private String text;
@@ -31,6 +32,7 @@ public class Status {
     private Status retweetedStatus;
     private boolean isLike;
     private boolean isDeleted;
+    private int type;
     
     public Status(){
     	this.haveImage=false;
@@ -38,6 +40,7 @@ public class Status {
     	this.middlePic="";
     	this.isLike=false;
     	this.isDeleted=false;
+    	this.type = NORMAL;
     }
     
 	public long getId() {
@@ -131,6 +134,10 @@ public class Status {
 
 	public void setLike(boolean isLike) {
 		this.isLike = isLike;
+		if(isLike)
+			this.type=FAVOR;
+		else
+			this.type=NORMAL;
 	}
 
 	public boolean isDeleted() {
@@ -139,6 +146,15 @@ public class Status {
 
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
+		this.type = FAVOR;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 

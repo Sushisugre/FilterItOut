@@ -1,9 +1,12 @@
 package com.akeng.filteritout.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,10 +18,12 @@ import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.util.OAuth2;
+import com.akeng.filteritout.util.WeiboAnalyzer;
 
 
 public class WeiboSectionFragment extends Fragment{
@@ -27,6 +32,7 @@ public class WeiboSectionFragment extends Fragment{
 	 */
 	private List<Status> statusList;
 	public WeiboListView statusListView;
+	private Activity fragmentActivity;
 	
 	public WeiboSectionFragment() {
 		statusList=new ArrayList<Status>( );
@@ -42,12 +48,11 @@ public class WeiboSectionFragment extends Fragment{
 		statusListView.setAdapter(statusAdapter);
 		statusListView.setRefreshListener((HomeActivity)getActivity());
 		statusListView.setSection(getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER));
+		
+		fragmentActivity=this.getActivity();
 		return v;
 	}
 	
-	
-	 
-
 	public void onUpdateContent() {
 
 		int section = this.getArguments().getInt(
@@ -140,11 +145,8 @@ public class WeiboSectionFragment extends Fragment{
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
 						
-						//TODO
-						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
-						intent.putExtra("text", status.getText());
-						intent.putExtra("type", 0);
-						v.getContext().startService(intent);
+						new RecordStatusTask().execute(status);
+
 					}});
 				
 				btnDelete.setOnClickListener(new OnClickListener(){
@@ -154,13 +156,7 @@ public class WeiboSectionFragment extends Fragment{
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
 						
-						
-						//TODO : save to database
-						
-						Intent intent=new Intent(v.getContext(),TextAnalysisService.class);
-						intent.putExtra("text", status.getText());
-						intent.putExtra("type", 1);
-						v.getContext().startService(intent);
+						new RecordStatusTask().execute(status);
 						
 						//delete the status
 						statusList.remove(statusPosition);
@@ -205,6 +201,31 @@ public class WeiboSectionFragment extends Fragment{
 			ImageButton btnDelete;
 
 		}
+	}
+	
+	private class RecordStatusTask extends AsyncTask<Status, Void, String>{
+
+		@Override
+		protected String doInBackground(
+				com.akeng.filteritout.entity.Status... raw) {
+			String result="";
+			
+			try{
+				result=WeiboAnalyzer.splitStatus(raw[0].getText());
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
+			
+			//TODO : save to database
+
+			
+			return result;
+		}
+		
+	    protected void onPostExecute(String result) {
+    		Toast.makeText(fragmentActivity, result, Toast.LENGTH_SHORT).show();
+	    }		
 	}
 	
 	

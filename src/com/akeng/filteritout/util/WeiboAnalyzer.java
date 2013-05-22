@@ -19,8 +19,18 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
 import android.util.Log;
 
 public class WeiboAnalyzer {
-	
+	static Analyzer ikAnalyzer;  
 	static String host = "http://jkx.fudan.edu.cn/fudannlp/";
+	
+	public static void initAnalyzer(){
+		if(ikAnalyzer==null)
+			ikAnalyzer=new IKAnalyzer(true);
+	}
+	
+	public static Analyzer getAnalyzer(){
+		initAnalyzer();
+		return ikAnalyzer;
+	}
 	
 	public static String nlp(String func, String input) throws IOException {        
         // must encode url!! if we write FudannlpResource.seg(String) this way
@@ -44,8 +54,8 @@ public class WeiboAnalyzer {
 
 
 	public static String splitStatus(String text)throws IOException{
-		 Analyzer ikAnalyzer = new IKAnalyzer(true);  
-	     return getToken(ikAnalyzer, cleanUpText(text));  
+		// Analyzer ikAnalyzer = new IKAnalyzer(true);  
+	     return getToken(getAnalyzer(), cleanUpText(text));  
 	}
 	
 	/**
@@ -68,22 +78,23 @@ public class WeiboAnalyzer {
      * @throws IOException 抛出的异常 
      */  
     public static String getToken(Analyzer analyzer, String text) throws IOException {  
-          
+  
         Reader reader = new StringReader(text);  
         TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
-        
-      // CharTermAttribute  ctermAtt  = (CharTermAttribute )stream.getAttribute(CharTermAttribute.class);  
-        TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
-       //  循环打印出分词的结果
+
+//       CharTermAttribute  ctermAtt  = (CharTermAttribute )stream.getAttribute(CharTermAttribute.class);  
+//        // 循环打印出分词的结果
 //        while(stream.incrementToken()){  
 //            System.out.print((new String(ctermAtt.buffer())).trim() + "|");   
 //        }  
 //        System.out.println();
         
         Log.i("Processed Text", text);
-        System.out.println("After tokenize:"+nlp("pos",text)); 
-        System.out.println("Before tokenize:"+nlp("key",text));
-		
+//        System.out.println("After tokenize:"+nlp("pos",text)); 
+//        System.out.println("Before tokenize:"+nlp("key",text));
+        
+        TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
+
         String tokens="";
         while(stream.incrementToken()){
         	String term=termAtt.term();	
@@ -94,8 +105,8 @@ public class WeiboAnalyzer {
         stream.close();
         reader.close();
         
-        System.out.println("After tokenize:"+nlp("pos",tokens));
-        System.out.println("After tokenize:"+nlp("key",tokens));
+//        System.out.println("After tokenize:"+nlp("pos",tokens));
+//        System.out.println("After tokenize:"+nlp("key",tokens));
         
         return tokens;
     }  

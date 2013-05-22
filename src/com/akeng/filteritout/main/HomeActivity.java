@@ -26,6 +26,7 @@ import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.main.WeiboListView.RefreshListener;
 import com.akeng.filteritout.util.OAuth2;
+import com.akeng.filteritout.util.WeiboAnalyzer;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
 
@@ -59,29 +60,24 @@ public class HomeActivity extends FragmentActivity implements
 
 		super.onCreate(savedInstanceState);
 		
-//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);	
-		this.getActionBar().setDisplayShowHomeEnabled(false);
-		this.getActionBar().setDisplayShowTitleEnabled(false);
-
-		setContentView(R.layout.activity_home);
-		
-		View layout=findViewById(R.id.pager);
-		//AndroidHelper.AutoBackground(this, layout, R.drawable.app_bg_v, R.drawable.app_bg_h);
-		layout.setBackgroundResource(R.drawable.app_bg_v);
 		
 		oauth=new OAuth2(HomeActivity.this);
 		
 		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		setContentView(R.layout.activity_home);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
 		mViewPager = (ViewPager) findViewById(R.id.pager);
+		//AndroidHelper.AutoBackground(this, mViewPager, R.drawable.app_bg_v, R.drawable.app_bg_h);
+		mViewPager.setBackgroundResource(R.drawable.app_bg_v);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
 
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
@@ -237,7 +233,7 @@ public class HomeActivity extends FragmentActivity implements
 	public void requestStatus(){
 		
 		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			oauth.requestEarlierFriendStatus(this);
+			oauth.requestNewFriendStatus(this);
 		}
 		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
 			oauth.requestPublicStatus(this);
@@ -249,7 +245,8 @@ public class HomeActivity extends FragmentActivity implements
 			this.runOnUiThread(new Runnable() {
 				
 			     public void run() {
-			    	 WeiboSectionFragment frament=(WeiboSectionFragment)getSupportFragmentManager().findFragmentByTag(makeFragmentName(R.id.pager,section));
+			    	 WeiboSectionFragment frament=(WeiboSectionFragment)getSupportFragmentManager().
+			    			 findFragmentByTag(makeFragmentName(R.id.pager,section));
 					frament.onUpdateContent();
 			    }
 			});
