@@ -18,15 +18,13 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.akeng.filteritout.R;
+import com.akeng.filteritout.entity.RecommendParam;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.main.WeiboListView.RefreshListener;
 import com.akeng.filteritout.util.OAuth2;
-import com.akeng.filteritout.util.WeiboAnalyzer;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
 
@@ -45,6 +43,7 @@ public class HomeActivity extends FragmentActivity implements
 	private ViewPager mViewPager;
 	public WeiboSectionFragment friendSection;
 	public WeiboSectionFragment recommendSection;
+	private RecommendTask recommentor=null;
 
 	public static List<Status> friendStatusList=new ArrayList<Status>();
 	public static List<Status> publicStatusList=new ArrayList<Status>();
@@ -59,7 +58,6 @@ public class HomeActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		
 		
 		oauth=new OAuth2(HomeActivity.this);
 		
@@ -172,33 +170,45 @@ public class HomeActivity extends FragmentActivity implements
 		int section=mViewPager.getCurrentItem();
 		final List<Status> newList=OAuth2.parseResponse(arg0);
 		
-		if (section == SECTION_FRIENDS) {
-			this.addToList(friendStatusList, newList);
-			if(newList.size()>0){
-				OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
-				OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
-			}
-		}
-		else if (section == SECTION_RECOMMENDS) 
-			this.addToList(publicStatusList, newList);
-	
-		//TODO recommend module
+		//construct parameter for recommend task
+		RecommendParam candidates=new RecommendParam();
+		candidates.setSection(section);
+		candidates.setStatus(newList);
 		
-		//notify weibosection to update views
-		this.updateSection(section);
-	
-		//toast shows the new loaded number
-		this.runOnUiThread(new Runnable() {
-		     public void run() {
-		 		if(newList.size()==0)
-					Toast.makeText(getApplication(),getString(R.string.no_more_new), Toast.LENGTH_SHORT).show();
-				else
-					Toast.makeText(getApplication(),newList.size()+getString(R.string.new_statuses), Toast.LENGTH_SHORT).show();
-		     }
-		});
+		recommentor=new RecommendTask(this);
+		recommentor.attach(this);
+		recommentor.execute(candidates); 
+		
+//		if (section == SECTION_FRIENDS) {
+//
+//			this.addToList(friendStatusList, newList);
+//			if(newList.size()>0){
+//				OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
+//				OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
+//			}
+//		}
+//		else if (section == SECTION_RECOMMENDS){
+//			//TODO recommend module
+//
+//			this.addToList(publicStatusList, newList);
+//		} 
+//	
+//		
+//		//notify weibosection to update views
+//		this.updateSection(section);
+//	
+//		//toast shows the new loaded number
+//		this.runOnUiThread(new Runnable() {
+//		     public void run() {
+//		 		if(newList.size()==0)
+//					Toast.makeText(getApplication(),getString(R.string.no_more_new), Toast.LENGTH_SHORT).show();
+//				else
+//					Toast.makeText(getApplication(),newList.size()+getString(R.string.new_statuses), Toast.LENGTH_SHORT).show();
+//		     }
+//		});
 	}
 	
-	private void addToList(List<Status> statusList, List<Status> newList) {
+	public static void addToList(List<Status> statusList, List<Status> newList) {
 		if (newList.size() > 0) {
 			// returned first id < OAuth2.maxId, earlier status
 			int index = newList.get(0).getId()< OAuth2.maxId ? statusList.size() : 0;
@@ -248,7 +258,6 @@ public class HomeActivity extends FragmentActivity implements
 	public void updateSection(final int section){
 
 			this.runOnUiThread(new Runnable() {
-				
 			     public void run() {
 			    	 WeiboSectionFragment frament=(WeiboSectionFragment)getSupportFragmentManager().
 			    			 findFragmentByTag(makeFragmentName(R.id.pager,section));
@@ -271,7 +280,6 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	public void refreshed(Object obj) {
-		// TODO Auto-generated method stub
 		Log.i("Refreshed", "Refreshed!!!!");
 	}
 
@@ -283,7 +291,7 @@ public class HomeActivity extends FragmentActivity implements
 			oauth.requestPublicStatus(this);
 	}
 	
-
+	  
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -320,6 +328,7 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
+		
 	}
 
 

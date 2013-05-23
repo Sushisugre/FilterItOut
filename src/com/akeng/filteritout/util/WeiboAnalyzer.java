@@ -66,7 +66,7 @@ public class WeiboAnalyzer {
 	 * @param text
 	 * @return
 	 */
-	private static String cleanUpText(String text){
+	public static String cleanUpText(String text){
 		String cleanText;
 		cleanText=text.replaceAll("(//@)\\S+:", " ");
 		cleanText=cleanText.replaceAll("(@)\\S+\\s", " ");
