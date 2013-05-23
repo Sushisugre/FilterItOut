@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,12 +25,12 @@ public class WeiboAnalyzer {
 	static Analyzer ikAnalyzer;  
 	static String host = "http://jkx.fudan.edu.cn/fudannlp/";
 	
-	public static void initAnalyzer(){
+	private static void initAnalyzer(){
 		if(ikAnalyzer==null)
 			ikAnalyzer=new IKAnalyzer(true);
 	}
 	
-	public static Analyzer getAnalyzer(){
+	private static Analyzer getAnalyzer(){
 		initAnalyzer();
 		return ikAnalyzer;
 	}
@@ -77,7 +80,7 @@ public class WeiboAnalyzer {
      * @param text         要分词的字符串 
      * @throws IOException 抛出的异常 
      */  
-    public static String getToken(Analyzer analyzer, String text) throws IOException {  
+    private static String getToken(Analyzer analyzer, String text) throws IOException {  
   
         Reader reader = new StringReader(text);  
         TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
@@ -95,19 +98,29 @@ public class WeiboAnalyzer {
         
         TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
 
-        String tokens="";
+        Map<String,Integer> keyMap=new HashMap<String,Integer>();
         while(stream.incrementToken()){
         	String term=termAtt.term();	
-        	tokens=tokens+term+" ";
-            System.out.print(term+"|"); 
+        	if(keyMap.containsKey(term))
+        		keyMap.put(term, keyMap.get(term)+1);
+        	else
+        		keyMap.put(term, 1);
+        	
+        	
         }  
-        System.out.println();
+        String keys="";
+        Iterator<String> it=keyMap.keySet().iterator();
+        while(it.hasNext()){
+        	String key=(String)it.next();
+        	keys=keys+key+":"+keyMap.get(key)+",";
+        }
+        System.out.println(keys);
         stream.close();
         reader.close();
         
 //        System.out.println("After tokenize:"+nlp("pos",tokens));
 //        System.out.println("After tokenize:"+nlp("key",tokens));
         
-        return tokens;
+        return keys;
     }  
 }

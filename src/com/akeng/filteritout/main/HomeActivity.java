@@ -172,8 +172,11 @@ public class HomeActivity extends FragmentActivity implements
 		int section=mViewPager.getCurrentItem();
 		final List<Status> newList=OAuth2.parseResponse(arg0);
 		
-		if (section == SECTION_FRIENDS) 
+		if (section == SECTION_FRIENDS) {
 			this.addToList(friendStatusList, newList);
+			OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
+			OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
+		}
 		else if (section == SECTION_RECOMMENDS) 
 			this.addToList(publicStatusList, newList);
 	
@@ -193,7 +196,7 @@ public class HomeActivity extends FragmentActivity implements
 		});
 	}
 	
-	private static void addToList(List<Status> statusList, List<Status> newList) {
+	private void addToList(List<Status> statusList, List<Status> newList) {
 		if (newList.size() > 0) {
 			// returned first id < OAuth2.maxId, earlier status
 			int index = newList.get(0).getId()< OAuth2.maxId ? statusList.size() : 0;

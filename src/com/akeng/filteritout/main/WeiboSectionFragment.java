@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
+import com.akeng.filteritout.entity.Tag;
+import com.akeng.filteritout.util.AccessTokenKeeper;
+import com.akeng.filteritout.util.DataHelper;
 import com.akeng.filteritout.util.OAuth2;
 import com.akeng.filteritout.util.WeiboAnalyzer;
 
@@ -60,8 +63,6 @@ public class WeiboSectionFragment extends Fragment{
 
 		if (section == HomeActivity.SECTION_FRIENDS){
 			statusList = HomeActivity.friendStatusList;
-			OAuth2.sinceId=statusList.get(0).getId();
-			OAuth2.maxId=statusList.get(statusList.size()-1).getId()-1;
 		}
 		if (section == HomeActivity.SECTION_RECOMMENDS)
 			statusList = HomeActivity.publicStatusList;
@@ -145,7 +146,8 @@ public class WeiboSectionFragment extends Fragment{
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
 						
-						new RecordStatusTask().execute(status);
+						if(isLike)
+							new RecordStatusTask().execute(status);
 
 					}});
 				
@@ -218,6 +220,10 @@ public class WeiboSectionFragment extends Fragment{
 			}
 			
 			//TODO : save to database
+	        DataHelper dataHelper=new DataHelper(fragmentActivity);
+			String userId=AccessTokenKeeper.readUserId(fragmentActivity);
+	        dataHelper.addStatus(userId, raw[0], result);
+	        dataHelper.Close();
 
 			
 			return result;

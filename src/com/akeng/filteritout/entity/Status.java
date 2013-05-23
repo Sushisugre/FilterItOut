@@ -41,6 +41,7 @@ public class Status {
     	this.isLike=false;
     	this.isDeleted=false;
     	this.type = NORMAL;
+    	this.retweetedStatus=null;
     }
     
 	public long getId() {

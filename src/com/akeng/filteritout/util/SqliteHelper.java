@@ -15,7 +15,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 	//save the table name of UserID,Access Token,Access Secret
 	public static final String TB_USER="users";
 	public static final String TB_TAGS="tags";
-	public static final String TB_STATUS="tags";
+	public static final String TB_STATUS="status";
 
 	
 	public SqliteHelper(Context context, String name, CursorFactory factory,
@@ -51,8 +51,12 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 Status.USERID+" varchar,"+
                 Status.KEYS+" varchar,"+
                 Status.TYPE+" integer,"+
-                Status.TIME+" integer,"+
+                Status.TIME+" varchar,"+
                 Status.TEXT+" varchar,"+
+                Status.USERNAME+" varchar,"+
+                Status.RETWEETED+" integer,"+
+                Status.PICTURE+" varchar,"+
+                Status.THUMB+" varchar,"+
                 "foreign key ("+Status.USERID+") "+"references "+TB_USER+" ("+UserInfo.USERID+"));"
                 );
 		

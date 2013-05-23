@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.entity.UserInfo;
 
@@ -137,6 +138,25 @@ public class DataHelper {
 	        cursor.close();
 	        
 	        return tags;
+	    }
+	    
+	    public void addStatus(String userId,Status status,String keys){
+	   	 ContentValues values = new ContentValues();
+	   	 values.put(Status.ID, status.getId());
+    	 values.put(Status.KEYS,keys);
+    	 values.put(Status.PICTURE, status.getMiddlePic());
+    	 values.put(Status.TEXT, status.getText());
+    	 values.put(Status.THUMB, status.getThumbnailPic());
+    	 values.put(Status.TIME, status.getTime());
+    	 values.put(Status.TYPE, status.getType());
+    	 values.put(Status.USERID, status.getUserId());
+    	 values.put(Status.USERNAME, status.getUsername());
+    	 if(status.getRetweetedStatus()!=null)
+    		 values.put(Status.RETWEETED, status.getRetweetedStatus().getId());
+
+    	 
+    	 db.insert(SqliteHelper.TB_STATUS, null, values);
+	     Log.e("Add Status","User id:"+userId+",Status text:"+status.getText()+",Status type:"+status.getType());
 	    }
 	    
 	    public boolean hasTag(String userId,String tagName,int type){
