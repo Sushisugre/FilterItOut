@@ -101,7 +101,6 @@ public class WeiboSectionFragment extends Fragment{
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-		//	Log.i("Get-View", "This is position:" + position);
 
 			ImageView userProfileImage;
 			TextView username;

@@ -1,7 +1,12 @@
 package com.akeng.filteritout.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -38,13 +43,39 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 			RecommendParam... param) {
 
 		System.out.println("Recommend Task");
-		newList=param[0].getStatus();
-		section=param[0].getSection();
-		
-		//TODO:Filtering
+		newList = param[0].getStatus();
+		section = param[0].getSection();
+
+		// get model
+		DataHelper dataHelper = new DataHelper(activity);
+		List<Map<String, Integer>> likeList = dataHelper.getModels(Tag.FAVOR);
+		List<Map<String, Integer>> dislikeList = dataHelper.getModels(Tag.DISLIKE);
+		dataHelper.Close();
+
 		filterDislike();
-		
-		
+
+		try {
+			for (int i = 0; i < newList.size(); i++) {
+
+				com.akeng.filteritout.entity.Status status = newList.get(i);
+				Map<String, Integer> candidateMap = WeiboAnalyzer
+						.splitStatus(status.getText());
+				if (dislikeList != null) {
+					double statusWeight = 0.0;
+					for (Map<String, Integer> model : dislikeList) {
+						double sim=similarity(candidateMap, model);
+						statusWeight = statusWeight>sim? statusWeight:sim;
+					}
+					System.out.println(statusWeight);
+				}
+				
+				if(likeList!=null){}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return newList;
 	}
 	
@@ -62,6 +93,38 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				}
 			}
 		}
+	}
+	
+	private double similarity(Map<String,Integer> model,Map<String,Integer> candidate){
+		Set<String> keys=new HashSet<String>(model.keySet());
+		Set<String> candidateKey=candidate.keySet();
+		keys.addAll(candidateKey);
+		
+		Iterator<String> it=keys.iterator();
+		int product=0;
+		double lenthModel=0;
+		double lenthCandidate=0;
+		while(it.hasNext()){
+			String keyword=it.next();
+			
+			//lenth
+			if(model.get(keyword)!=null)
+				lenthModel+=Math.pow(model.get(keyword),2);
+			
+			if(candidate.get(keyword)!=null)
+				lenthCandidate+=Math.pow(candidate.get(keyword),2);
+
+			//calcualte product
+			if(model.get(keyword) != null&&candidate.get(keyword)!=null)
+				product=product+model.get(keyword)*candidate.get(keyword);
+		}
+		lenthModel=Math.sqrt(lenthModel);
+		lenthCandidate=Math.sqrt(lenthCandidate);
+		System.out.println("Model lenth "+lenthModel);
+		System.out.println("Candidate lenth "+lenthCandidate);
+
+		
+		return product/(lenthModel*lenthCandidate);
 	}
 	
 	private List<String> getUserTag(int type){

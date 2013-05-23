@@ -280,7 +280,6 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	public void refreshed(Object obj) {
-		Log.i("Refreshed", "Refreshed!!!!");
 	}
 
 	@Override

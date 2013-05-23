@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -138,6 +140,37 @@ public class DataHelper {
 	        cursor.close();
 	        
 	        return tags;
+	    }
+	    
+	    public List<Map<String,Integer>> getModels(int type){
+	    	
+	    	String where=Status.TYPE+"="+type;
+	        Cursor cursor=db.query(SqliteHelper.TB_STATUS, null, where, null, null, null,null);
+	        
+	        List<Map<String,Integer>> modelList=new ArrayList<Map<String,Integer>>();
+	        
+	        if (!cursor.moveToFirst())
+	        	return null;
+	        
+	        
+	        while(!cursor.isAfterLast()){
+	        	
+		    	Map<String,Integer> keyMap=new HashMap<String,Integer>();
+
+	        	String keyString=cursor.getString(2);
+	        	String[] TF=keyString.split(",");
+	        	for(String term:TF){
+	        		String[] pair=term.split(":");
+	        		keyMap.put(pair[0], Integer.parseInt(pair[1]));
+	        	}
+	        	modelList.add(keyMap);
+	        	
+	        	cursor.moveToNext();
+	        }
+	        
+	        cursor.close();
+	        
+	        return modelList;
 	    }
 	    
 	    public boolean hasStatus(long id){

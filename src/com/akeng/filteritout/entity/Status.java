@@ -33,6 +33,7 @@ public class Status {
     private boolean isLike;
     private boolean isDeleted;
     private int type;
+    private int weight;
     
     public Status(){
     	this.haveImage=false;
@@ -42,6 +43,7 @@ public class Status {
     	this.isDeleted=false;
     	this.type = NORMAL;
     	this.retweetedStatus=null;
+    	this.weight=0;
     }
     
 	public long getId() {
@@ -147,7 +149,7 @@ public class Status {
 
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
-		this.type = FAVOR;
+		this.type = DISLIKE;
 	}
 
 	public int getType() {
@@ -156,6 +158,14 @@ public class Status {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 
