@@ -146,7 +146,7 @@ public class WeiboSectionFragment extends Fragment{
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
 						
-						if(isLike)
+						if(status.isLike())
 							new RecordStatusTask().execute(status);
 
 					}});

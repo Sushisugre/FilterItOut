@@ -140,24 +140,39 @@ public class DataHelper {
 	        return tags;
 	    }
 	    
-	    public void addStatus(String userId,Status status,String keys){
-	   	 ContentValues values = new ContentValues();
-	   	 values.put(Status.ID, status.getId());
-    	 values.put(Status.KEYS,keys);
-    	 values.put(Status.PICTURE, status.getMiddlePic());
-    	 values.put(Status.TEXT, status.getText());
-    	 values.put(Status.THUMB, status.getThumbnailPic());
-    	 values.put(Status.TIME, status.getTime());
-    	 values.put(Status.TYPE, status.getType());
-    	 values.put(Status.USERID, status.getUserId());
-    	 values.put(Status.USERNAME, status.getUsername());
-    	 if(status.getRetweetedStatus()!=null)
-    		 values.put(Status.RETWEETED, status.getRetweetedStatus().getId());
-
-    	 
-    	 db.insert(SqliteHelper.TB_STATUS, null, values);
-	     Log.e("Add Status","User id:"+userId+",Status text:"+status.getText()+",Status type:"+status.getType());
+	    public boolean hasStatus(long id){
+	        Boolean hasStatus=false;
+	    	String where=Status.ID+"="+id;
+	        Cursor cursor=db.query(SqliteHelper.TB_STATUS, null, where, null, null, null,null);
+	        hasStatus=cursor.moveToFirst();
+	        cursor.close();
+	        
+	        return hasStatus;
 	    }
+	    
+	public void addStatus(String userId, Status status, String keys) {
+
+		if(hasStatus(status.getId()))
+			return;
+		
+		ContentValues values = new ContentValues();
+		values.put(Status.ID, status.getId());
+		values.put(Status.KEYS, keys);
+		values.put(Status.PICTURE, status.getMiddlePic());
+		values.put(Status.TEXT, status.getText());
+		values.put(Status.THUMB, status.getThumbnailPic());
+		values.put(Status.TIME, status.getTime());
+		values.put(Status.TYPE, status.getType());
+		values.put(Status.USERID, status.getUserId());
+		values.put(Status.USERNAME, status.getUsername());
+		if (status.getRetweetedStatus() != null)
+			values.put(Status.RETWEETED, status.getRetweetedStatus().getId());
+
+		db.insert(SqliteHelper.TB_STATUS, null, values);
+		Log.e("Add Status",
+				"User id:" + userId + ",Status text:" + status.getText()
+						+ ",Status type:" + status.getType());
+	}
 	    
 	    public boolean hasTag(String userId,String tagName,int type){
 	        Boolean hasTag=false;

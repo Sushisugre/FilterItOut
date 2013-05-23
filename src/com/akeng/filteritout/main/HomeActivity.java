@@ -174,8 +174,10 @@ public class HomeActivity extends FragmentActivity implements
 		
 		if (section == SECTION_FRIENDS) {
 			this.addToList(friendStatusList, newList);
-			OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
-			OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
+			if(newList.size()>0){
+				OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
+				OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
+			}
 		}
 		else if (section == SECTION_RECOMMENDS) 
 			this.addToList(publicStatusList, newList);
