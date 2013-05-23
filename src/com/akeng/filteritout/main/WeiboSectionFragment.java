@@ -2,10 +2,11 @@ package com.akeng.filteritout.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,10 +23,8 @@ import android.widget.Toast;
 
 import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.Status;
-import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.DataHelper;
-import com.akeng.filteritout.util.OAuth2;
 import com.akeng.filteritout.util.WeiboAnalyzer;
 
 
@@ -210,23 +209,31 @@ public class WeiboSectionFragment extends Fragment{
 		@Override
 		protected String doInBackground(
 				com.akeng.filteritout.entity.Status... raw) {
-			String result="";
 			
+				String keys="";
 			try{
-				result=WeiboAnalyzer.splitStatus(raw[0].getText());
+				
+		        Map<String,Integer> keyMap=WeiboAnalyzer.splitStatus(raw[0].getText());
+		      
+		        Iterator<String> it=keyMap.keySet().iterator();
+		        while(it.hasNext()){
+		        	String key=(String)it.next();
+		        	keys=keys+key+":"+keyMap.get(key)+",";
+		        }
+		        System.out.println(keys);
 			}
 			catch(IOException e){
 				e.printStackTrace();
 			}
 			
-			//TODO : save to database
+			
+			
 	        DataHelper dataHelper=new DataHelper(fragmentActivity);
 			String userId=AccessTokenKeeper.readUserId(fragmentActivity);
-	        dataHelper.addStatus(userId, raw[0], result);
+	        dataHelper.addStatus(userId, raw[0], keys);
 	        dataHelper.Close();
 
-			
-			return result;
+			return keys;
 		}
 		
 	    protected void onPostExecute(String result) {

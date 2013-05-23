@@ -56,7 +56,7 @@ public class WeiboAnalyzer {
 
 
 
-	public static String splitStatus(String text)throws IOException{
+	public static Map<String,Integer> splitStatus(String text)throws IOException{
 		// Analyzer ikAnalyzer = new IKAnalyzer(true);  
 	     return getToken(getAnalyzer(), cleanUpText(text));  
 	}
@@ -80,7 +80,7 @@ public class WeiboAnalyzer {
      * @param text         要分词的字符串 
      * @throws IOException 抛出的异常 
      */  
-    private static String getToken(Analyzer analyzer, String text) throws IOException {  
+    private static Map<String,Integer> getToken(Analyzer analyzer, String text) throws IOException {  
   
         Reader reader = new StringReader(text);  
         TokenStream stream = (TokenStream)analyzer.tokenStream("", reader);  
@@ -106,21 +106,14 @@ public class WeiboAnalyzer {
         	else
         		keyMap.put(term, 1);
         	
-        	
         }  
-        String keys="";
-        Iterator<String> it=keyMap.keySet().iterator();
-        while(it.hasNext()){
-        	String key=(String)it.next();
-        	keys=keys+key+":"+keyMap.get(key)+",";
-        }
-        System.out.println(keys);
+
         stream.close();
         reader.close();
         
 //        System.out.println("After tokenize:"+nlp("pos",tokens));
 //        System.out.println("After tokenize:"+nlp("key",tokens));
         
-        return keys;
+        return keyMap;
     }  
 }

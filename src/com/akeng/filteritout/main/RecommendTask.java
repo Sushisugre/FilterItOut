@@ -57,7 +57,6 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		for(int i=0;i< newList.size();i++){
 			String text=WeiboAnalyzer.cleanUpText(newList.get(i).getText());
 			for(String tag:dislike){
-				System.out.println(tag);
 				if(text.contains(tag)){
 					newList.remove(i);
 				}
