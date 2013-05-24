@@ -101,6 +101,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	        measureView(mHeaderLinearLayout);
 	        mHeaderHeight = mHeaderLinearLayout.getMeasuredHeight();
 	 
+	        //TODO
 	        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 	        mHeaderUpdateText.setText(context.getString(R.string.last_update, mSimpleDateFormat.format(new Date())));
 	    }
@@ -210,7 +211,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	    private void measureView(View child) {
 	        ViewGroup.LayoutParams p = child.getLayoutParams();
 	        if (p == null) {
-	            p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+	            p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 	                    ViewGroup.LayoutParams.WRAP_CONTENT);
 	        }
 	 

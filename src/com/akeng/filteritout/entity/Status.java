@@ -33,7 +33,7 @@ public class Status {
     private boolean isLike;
     private boolean isDeleted;
     private int type;
-    private int weight;
+    private double weight;
     
     public Status(){
     	this.haveImage=false;
@@ -160,11 +160,11 @@ public class Status {
 		this.type = type;
 	}
 
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
 
-	public void setWeight(int weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 

@@ -52,7 +52,7 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		List<Map<String, Integer>> dislikeList = dataHelper.getModels(Tag.DISLIKE);
 		dataHelper.Close();
 
-		filterDislike();
+		filterDislike(newList);
 
 		try {
 			for (int i = 0; i < newList.size(); i++) {
@@ -61,15 +61,12 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				Map<String, Integer> candidateMap = WeiboAnalyzer
 						.splitStatus(status.getText());
 				if (dislikeList != null) {
-					double statusWeight = 0.0;
-					for (Map<String, Integer> model : dislikeList) {
-						double sim=similarity(candidateMap, model);
-						statusWeight = statusWeight>sim? statusWeight:sim;
-					}
-					System.out.println(statusWeight);
+					double dislikeWeight=getWeight(dislikeList,candidateMap);
 				}
 				
-				if(likeList!=null){}
+				if(likeList!=null){
+					double likeWeight=getWeight(likeList,candidateMap);
+				}
 
 			}
 		} catch (IOException e) {
@@ -79,23 +76,33 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		return newList;
 	}
 	
-	private void filterDislike(){
+	private void filterDislike(List<com.akeng.filteritout.entity.Status> statusList){
 		
 		List<String> dislike=getUserTag(Tag.DISLIKE);
 		if(dislike==null)
 			return;
 		
-		for(int i=0;i< newList.size();i++){
-			String text=WeiboAnalyzer.cleanUpText(newList.get(i).getText());
+		for(int i=0;i< statusList.size();i++){
+			String text=WeiboAnalyzer.cleanUpText(statusList.get(i).getText());
 			for(String tag:dislike){
 				if(text.contains(tag)){
-					newList.remove(i);
+					statusList.remove(i);
 				}
 			}
 		}
 	}
 	
-	private double similarity(Map<String,Integer> model,Map<String,Integer> candidate){
+	private double getWeight(List<Map<String, Integer>> modelList,Map<String, Integer> candidate){
+		double statusWeight = 0.0;
+		for (Map<String, Integer> model : modelList) {
+			double sim=getSimilarity(candidate, model);
+			statusWeight = statusWeight>sim? statusWeight:sim;
+		}
+		System.out.println(statusWeight);
+		return statusWeight;
+	}
+	
+	private double getSimilarity(Map<String,Integer> model,Map<String,Integer> candidate){
 		Set<String> keys=new HashSet<String>(model.keySet());
 		Set<String> candidateKey=candidate.keySet();
 		keys.addAll(candidateKey);
@@ -120,8 +127,9 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		}
 		lenthModel=Math.sqrt(lenthModel);
 		lenthCandidate=Math.sqrt(lenthCandidate);
-		System.out.println("Model lenth "+lenthModel);
-		System.out.println("Candidate lenth "+lenthCandidate);
+//		System.out.println("Product "+product);
+//		System.out.println("Model lenth "+lenthModel);
+//		System.out.println("Candidate lenth "+lenthCandidate);
 
 		
 		return product/(lenthModel*lenthCandidate);
@@ -144,6 +152,9 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
         return tagNames;
 	}
 	
+	/**
+	 * Update Section
+	 */
 	protected void onPostExecute(
 			List<com.akeng.filteritout.entity.Status> filteredList) {
 		
@@ -152,10 +163,10 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		if (section == HomeActivity.SECTION_FRIENDS) {
 			HomeActivity.addToList(HomeActivity.friendStatusList, filteredList);
 			if (newList.size() > 0) {
-				OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? OAuth2.sinceId
-						: newList.get(0).getId();
-				OAuth2.maxId = OAuth2.maxId < newList.get(newList.size() - 1)
-						.getId() - 1 ? OAuth2.maxId : newList.get( newList.size() - 1).getId() - 1;
+				OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? 
+						OAuth2.sinceId: newList.get(0).getId();
+				OAuth2.maxId = OAuth2.maxId < (newList.get(newList.size() - 1).getId() - 1) ?
+						OAuth2.maxId : (newList.get( newList.size() - 1).getId() - 1);
 			}
 		} else if (section == HomeActivity.SECTION_RECOMMENDS) {
 			HomeActivity.addToList(HomeActivity.publicStatusList, filteredList);

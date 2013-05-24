@@ -71,6 +71,8 @@ public class WeiboAnalyzer {
 		cleanText=text.replaceAll("(//@)\\S+:", " ");
 		cleanText=cleanText.replaceAll("(@)\\S+\\s", " ");
 		cleanText=cleanText.replaceAll("(http://t\\.cn/)\\S{6}", " ");
+		cleanText=cleanText.replaceAll("(\\[\\S+\\])", " ");
+
 		return cleanText;
 	}
 	
