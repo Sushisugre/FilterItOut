@@ -43,15 +43,16 @@ public class AuthDialogListener implements WeiboAuthListener {
             if(user!=null){
                 DataHelper helper=new DataHelper(context);
                 String uid=user.getUserId();
-                if(helper.HaveUserInfo(uid))
+                if(helper.hasUserInfo(uid))
                 {
-                    helper.UpdateUserInfo(user);
+                    helper.updateUserInfo(user);
                     Log.e("UserInfo", "update");
                 }else
                 {
-                    helper.SaveUserInfo(user);
+                    helper.addUserInfo(user);
                     Log.e("UserInfo", "add");
                 }
+                helper.close();
             }
             
             //to homepage

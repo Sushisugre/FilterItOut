@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -58,7 +57,7 @@ public class WeiboAnalyzer {
 
 	public static Map<String,Integer> splitStatus(String text)throws IOException{
 		// Analyzer ikAnalyzer = new IKAnalyzer(true);  
-	     return getToken(getAnalyzer(), cleanUpText(text));  
+	     return getToken(getAnalyzer(), text);  
 	}
 	
 	/**
@@ -68,11 +67,10 @@ public class WeiboAnalyzer {
 	 */
 	public static String cleanUpText(String text){
 		String cleanText;
-		cleanText=text.replaceAll("(//@)\\S+:", " ");
-		cleanText=cleanText.replaceAll("(@)\\S+\\s", " ");
-		cleanText=cleanText.replaceAll("(http://t\\.cn/)\\S{6}", " ");
-		cleanText=cleanText.replaceAll("(\\[\\S+\\])", " ");
-
+		cleanText=text.replaceAll("(//@)\\S+:", "");
+		cleanText=cleanText.replaceAll("(@)\\S+\\s", "");
+		cleanText=cleanText.replaceAll("(http://t\\.cn/)\\S{7}", "");
+		cleanText=cleanText.replaceAll("(\\[\\S+\\])", "");
 		return cleanText;
 	}
 	
@@ -94,10 +92,11 @@ public class WeiboAnalyzer {
 //        }  
 //        System.out.println();
         
-        Log.i("Processed Text", text);
 //        System.out.println("After tokenize:"+nlp("pos",text)); 
 //        System.out.println("Before tokenize:"+nlp("key",text));
-        
+
+        Log.i("Processed Text", text);
+
         TermAttribute termAtt  = (TermAttribute)stream.addAttribute(TermAttribute.class);
 
         Map<String,Integer> keyMap=new HashMap<String,Integer>();

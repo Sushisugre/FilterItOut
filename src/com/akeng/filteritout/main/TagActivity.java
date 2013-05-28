@@ -50,7 +50,7 @@ public class TagActivity extends Activity{
         DataHelper dataHelper=new DataHelper(TagActivity.this);
         likeTags=dataHelper.getUserTags(userId, Tag.FAVOR);
         dislikeTags=dataHelper.getUserTags(userId, Tag.DISLIKE);
-        dataHelper.Close();
+        dataHelper.close();
         
         
         if(likeTags==null)
@@ -186,7 +186,7 @@ public class TagActivity extends Activity{
 						dataHelper.addTag(userId,tagName,Tag.DISLIKE);	
 					}
 				}
-				dataHelper.Close();
+				dataHelper.close();
 				
 				//TODO: resume home activity?
 	            Intent intent = new Intent();
@@ -194,7 +194,6 @@ public class TagActivity extends Activity{
 	            TagActivity.this.startActivity(intent);
 			}
 		});
-		
 	}
 	
 	

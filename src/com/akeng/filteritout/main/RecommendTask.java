@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.akeng.filteritout.R;
@@ -17,17 +18,19 @@ import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.DataHelper;
-import com.akeng.filteritout.util.OAuth2;
 import com.akeng.filteritout.util.WeiboAnalyzer;
 
 public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>> {
 	HomeActivity activity;
 	List<com.akeng.filteritout.entity.Status> newList;
+	List<String> likeTags;
+	List<String> dislikeTags;
 	int section;
 	int filtered;
 	
 	public RecommendTask(HomeActivity activity){
 		this.activity=activity;
+		this.filtered=0;
 	}
 
     void detach() {
@@ -42,7 +45,6 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 	protected List<com.akeng.filteritout.entity.Status> doInBackground(
 			RecommendParam... param) {
 
-		System.out.println("Recommend Task");
 		newList = param[0].getStatus();
 		section = param[0].getSection();
 
@@ -50,7 +52,11 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		DataHelper dataHelper = new DataHelper(activity);
 		List<Map<String, Integer>> likeList = dataHelper.getModels(Tag.FAVOR);
 		List<Map<String, Integer>> dislikeList = dataHelper.getModels(Tag.DISLIKE);
-		dataHelper.Close();
+		dataHelper.close();
+
+		//get tags
+		likeTags = getUserTag(Tag.FAVOR);
+		dislikeTags = getUserTag(Tag.DISLIKE);
 
 		filterDislike(newList);
 
@@ -58,15 +64,52 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 			for (int i = 0; i < newList.size(); i++) {
 
 				com.akeng.filteritout.entity.Status status = newList.get(i);
+				String content = WeiboAnalyzer.cleanUpText(status.getText());
+
+				// filter statuses that are too short
+				if (section == HomeActivity.SECTION_RECOMMENDS) {
+					if (content.length() < 30) {
+						newList.remove(i);
+						i--;
+						continue;
+					}
+				}
+
 				Map<String, Integer> candidateMap = WeiboAnalyzer
-						.splitStatus(status.getText());
+						.splitStatus(content);
+			
+				//similarity with dislike status	
 				if (dislikeList != null) {
-					double dislikeWeight=getWeight(dislikeList,candidateMap);
+					double dislikeWeight = getWeight(dislikeList, candidateMap);
+					if (dislikeWeight > 0.1) {
+						Log.e("dislike weight>0.1", content);
+						newList.remove(i);
+						i--;
+						this.filtered++;
+						continue;
+					}
 				}
-				
-				if(likeList!=null){
-					double likeWeight=getWeight(likeList,candidateMap);
+
+				double likeWeight = 0;
+				if (likeList != null)
+					likeWeight = getWeight(likeList, candidateMap);
+
+				if (section == HomeActivity.SECTION_RECOMMENDS) {
+					if (likeWeight < 0.1) {
+
+						if (containTag(likeTags, content)) {
+							likeWeight = 0.2;
+						} else {
+							Log.e("like weight<0.1", content);
+							 newList.remove(i);
+							 i--;
+							 continue;
+						}
+
+					}
 				}
+
+				status.setWeight(likeWeight);
 
 			}
 		} catch (IOException e) {
@@ -76,19 +119,32 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		return newList;
 	}
 	
-	private void filterDislike(List<com.akeng.filteritout.entity.Status> statusList){
+	private boolean containTag(List<String> taglist,String text){
+		boolean isContain=false;
 		
-		List<String> dislike=getUserTag(Tag.DISLIKE);
-		if(dislike==null)
-			return;
+		if(taglist==null)
+			return false;
+		
+		for(String tag:taglist){
+			if(text.contains(tag)){
+				System.out.println("contain tag:"+tag);
+				isContain=true;
+			}
+		}
+		
+		return isContain;
+	}
+	
+	private void filterDislike(List<com.akeng.filteritout.entity.Status> statusList){
 		
 		for(int i=0;i< statusList.size();i++){
 			String text=WeiboAnalyzer.cleanUpText(statusList.get(i).getText());
-			for(String tag:dislike){
-				if(text.contains(tag)){
+				if(containTag(dislikeTags,text)){
 					statusList.remove(i);
+					i--;
+					System.out.println("filtered dislike tag "+text);
+					this.filtered++;
 				}
-			}
 		}
 	}
 	
@@ -127,10 +183,6 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		}
 		lenthModel=Math.sqrt(lenthModel);
 		lenthCandidate=Math.sqrt(lenthCandidate);
-//		System.out.println("Product "+product);
-//		System.out.println("Model lenth "+lenthModel);
-//		System.out.println("Candidate lenth "+lenthCandidate);
-
 		
 		return product/(lenthModel*lenthCandidate);
 	}
@@ -139,7 +191,7 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		
         DataHelper dataHelper=new DataHelper(activity);
         List<Tag> tags=dataHelper.getUserTags(AccessTokenKeeper.readUserId(activity), type);
-        dataHelper.Close();
+        dataHelper.close();
         
         if(tags==null)
         	return null;
@@ -162,28 +214,37 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		
 		if (section == HomeActivity.SECTION_FRIENDS) {
 			HomeActivity.addToList(HomeActivity.friendStatusList, filteredList);
-			if (newList.size() > 0) {
-				OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? 
-						OAuth2.sinceId: newList.get(0).getId();
-				OAuth2.maxId = OAuth2.maxId < (newList.get(newList.size() - 1).getId() - 1) ?
-						OAuth2.maxId : (newList.get( newList.size() - 1).getId() - 1);
-			}
+
 		} else if (section == HomeActivity.SECTION_RECOMMENDS) {
 			HomeActivity.addToList(HomeActivity.publicStatusList, filteredList);
 		}
 
 		// notify weibosection to update views
 		activity.updateSection(section);
+		
 
 		// toast shows the new loaded number
-		if (newList.size() == 0)
-			Toast.makeText(activity.getApplication(),
-					activity.getString(R.string.no_more_new),
+		
+		String noStatus="";
+		String filteredNum="";
+		
+		if (section == HomeActivity.SECTION_FRIENDS) {
+			noStatus = activity.getString(R.string.no_more_new);
+			filteredNum = filtered
+					+ activity.getString(R.string.filtered_statuses);
+		} else if (section == HomeActivity.SECTION_RECOMMENDS) {
+			noStatus = activity.getString(R.string.no_more_recommend);
+		}
+		
+		if (newList.size() == 0){
+			Toast.makeText(activity.getApplication(),noStatus+","+filteredNum,
 					Toast.LENGTH_SHORT).show();
-		else
+		}
+		else{
 			Toast.makeText(activity.getApplication(),
-					newList.size() + activity.getString(R.string.new_statuses),
-					Toast.LENGTH_SHORT).show();
+					newList.size() + activity.getString(R.string.new_statuses)+","+filteredNum,
+					3000).show();
+			}
 
 	}	
 	

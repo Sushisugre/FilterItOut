@@ -17,7 +17,9 @@
     <string name="more">更多</string>
     <string name="loading">正在加载</string>
     <string name="no_more_new">没有新的微博</string>
+    <string name="no_more_recommend">没有新的推荐</string>
     <string name="new_statuses">条新的微博</string>
+    <string name="filtered_statuses">条被过滤</string>
     <string name="title_activity_tag">选择你的标签</string>
     <drawable name="red">#F55722</drawable>
     <color name="gray">#999999</color>

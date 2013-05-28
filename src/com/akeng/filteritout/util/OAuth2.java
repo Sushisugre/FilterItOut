@@ -90,7 +90,7 @@ public class OAuth2 {
     }
     
     public void requestPublicStatus(RequestListener listener){
-		statusesAPI.publicTimeline(15, 1, false, listener);
+		statusesAPI.publicTimeline(200, 1, false, listener);
     }
     
     /**
@@ -191,6 +191,9 @@ public class OAuth2 {
             status.setRepostsCount(obj.getInt("reposts_count"));
             status.setCommentsCount(obj.getInt("comments_count"));
             status.setAttitudesCount(obj.getInt("attitudes_count"));
+            
+            u=null;
+            obj=null;
             
            // Log.e("userIcon", u.getString("profile_image_url"));  
 

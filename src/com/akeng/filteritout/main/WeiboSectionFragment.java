@@ -211,8 +211,8 @@ public class WeiboSectionFragment extends Fragment{
 			
 				String keys="";
 			try{
-				
-		        Map<String,Integer> keyMap=WeiboAnalyzer.splitStatus(raw[0].getText());
+				String content=WeiboAnalyzer.cleanUpText(raw[0].getText());
+		        Map<String,Integer> keyMap=WeiboAnalyzer.splitStatus(content);
 		      
 		        Iterator<String> it=keyMap.keySet().iterator();
 		        while(it.hasNext()){
@@ -230,7 +230,7 @@ public class WeiboSectionFragment extends Fragment{
 	        DataHelper dataHelper=new DataHelper(fragmentActivity);
 			String userId=AccessTokenKeeper.readUserId(fragmentActivity);
 	        dataHelper.addStatus(userId, raw[0], keys);
-	        dataHelper.Close();
+	        dataHelper.close();
 
 			return keys;
 		}

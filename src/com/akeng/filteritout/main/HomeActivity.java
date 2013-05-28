@@ -170,6 +170,17 @@ public class HomeActivity extends FragmentActivity implements
 		int section=mViewPager.getCurrentItem();
 		final List<Status> newList=OAuth2.parseResponse(arg0);
 		
+		
+		if(section==SECTION_FRIENDS){
+			if (newList.size() > 0) {
+				OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? 
+						OAuth2.sinceId: newList.get(0).getId();
+				OAuth2.maxId = OAuth2.maxId < (newList.get(newList.size() - 1).getId() - 1) ?
+						OAuth2.maxId : (newList.get( newList.size() - 1).getId() - 1);
+			}
+		}
+
+		
 		//construct parameter for recommend task
 		RecommendParam candidates=new RecommendParam();
 		candidates.setSection(section);
@@ -179,33 +190,7 @@ public class HomeActivity extends FragmentActivity implements
 		recommentor.attach(this);
 		recommentor.execute(candidates); 
 		
-//		if (section == SECTION_FRIENDS) {
-//
-//			this.addToList(friendStatusList, newList);
-//			if(newList.size()>0){
-//				OAuth2.sinceId=OAuth2.sinceId > newList.get(0).getId()? OAuth2.sinceId : newList.get(0).getId();
-//				OAuth2.maxId=OAuth2.maxId < newList.get(newList.size()-1).getId()-1? OAuth2.maxId:newList.get(newList.size()-1).getId()-1 ;	
-//			}
-//		}
-//		else if (section == SECTION_RECOMMENDS){
-//			//TODO recommend module
-//
-//			this.addToList(publicStatusList, newList);
-//		} 
-//	
-//		
-//		//notify weibosection to update views
-//		this.updateSection(section);
-//	
-//		//toast shows the new loaded number
-//		this.runOnUiThread(new Runnable() {
-//		     public void run() {
-//		 		if(newList.size()==0)
-//					Toast.makeText(getApplication(),getString(R.string.no_more_new), Toast.LENGTH_SHORT).show();
-//				else
-//					Toast.makeText(getApplication(),newList.size()+getString(R.string.new_statuses), Toast.LENGTH_SHORT).show();
-//		     }
-//		});
+
 	}
 	
 	public static void addToList(List<Status> statusList, List<Status> newList) {

@@ -32,13 +32,13 @@ public class DataHelper {
 	        db= dbHelper.getWritableDatabase();
 	    }
 	    
-	    public void Close()
+	    public void close()
 	    {
 	        db.close();
 	        dbHelper.close();
 	    }
 	    
-	    public List<UserInfo> GetUserList(Boolean isSimple)
+	    public List<UserInfo> getUserList(Boolean isSimple)
 	    {
 	        List<UserInfo> userList = new ArrayList<UserInfo>();
 	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, null, null, null, null, UserInfo.ID+" DESC");
@@ -62,7 +62,7 @@ public class DataHelper {
 	        return userList;
 	    }
 	    
-	    public Boolean HaveUserInfo(String UserId)
+	    public Boolean hasUserInfo(String UserId)
 	    {
 	        Boolean b=false;
 	        Cursor cursor=db.query(SqliteHelper.TB_USER, null, UserInfo.USERID + "=" + UserId, null, null, null,null);
@@ -73,7 +73,7 @@ public class DataHelper {
 	    }
 	    
 	    //update image and name according to userId
-	    public int UpdateUserInfo(String userName,Bitmap userIcon,String UserId)
+	    public int updateUserInfo(String userName,Bitmap userIcon,String UserId)
 	    {
 	        ContentValues values = new ContentValues();
 	        values.put(UserInfo.USERNAME, userName);
@@ -88,7 +88,7 @@ public class DataHelper {
 	        return id;
 	    }
 	    
-	    public int UpdateUserInfo(UserInfo user)
+	    public int updateUserInfo(UserInfo user)
 	    {
 	        ContentValues values = new ContentValues();
 	        values.put(UserInfo.USERID, user.getUserId());
@@ -99,7 +99,7 @@ public class DataHelper {
 	        return id;
 	    }
 	    
-	    public Long SaveUserInfo(UserInfo user)
+	    public Long addUserInfo(UserInfo user)
 	    {
 	        ContentValues values = new ContentValues();
 	        values.put(UserInfo.USERID, user.getUserId());
@@ -110,7 +110,7 @@ public class DataHelper {
 	        return uid;
 	    }
 	    
-	    public int DelUserInfo(String UserId){
+	    public int deleteUserInfo(String UserId){
 	        int id=  db.delete(SqliteHelper.TB_USER, UserInfo.USERID +"="+UserId, null);
 	        Log.e("DelUserInfo",id+"");
 	        return id;
