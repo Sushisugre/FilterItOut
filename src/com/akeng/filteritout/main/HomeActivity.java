@@ -56,6 +56,7 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println("Activity on create");
 
 		super.onCreate(savedInstanceState);
 		
@@ -93,6 +94,30 @@ public class HomeActivity extends FragmentActivity implements
 
 		
 	}
+	
+	
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
+
+
+	@Override
+	public void onDestroy(){
+		System.out.println("activity - On destroy - ");
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

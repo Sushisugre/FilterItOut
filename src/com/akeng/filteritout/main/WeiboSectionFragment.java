@@ -34,10 +34,24 @@ public class WeiboSectionFragment extends Fragment{
 	 */
 	private List<Status> statusList;
 	public WeiboListView statusListView;
-	private Activity fragmentActivity;
 	
 	public WeiboSectionFragment() {
 		statusList=new ArrayList<Status>( );
+	}
+
+	@Override
+	public void onResume() {
+		System.out.println("------On Resume-----");
+		updateList();
+		super.onResume();
+	}
+	
+	
+
+	@Override
+	public void onPause() {
+		System.out.println("------On Pause-----");
+		super.onPause();
 	}
 
 	@Override
@@ -51,7 +65,6 @@ public class WeiboSectionFragment extends Fragment{
 		statusListView.setRefreshListener((HomeActivity)getActivity());
 		statusListView.setSection(getArguments().getInt(HomeActivity.ARG_SECTION_NUMBER));
 		
-		fragmentActivity=this.getActivity();
 		return v;
 	}
 	
@@ -227,8 +240,8 @@ public class WeiboSectionFragment extends Fragment{
 			
 			
 			
-	        DataHelper dataHelper=new DataHelper(fragmentActivity);
-			String userId=AccessTokenKeeper.readUserId(fragmentActivity);
+	        DataHelper dataHelper=new DataHelper(getActivity());
+			String userId=AccessTokenKeeper.readUserId(getActivity());
 	        dataHelper.addStatus(userId, raw[0], keys);
 	        dataHelper.close();
 
@@ -236,7 +249,7 @@ public class WeiboSectionFragment extends Fragment{
 		}
 		
 	    protected void onPostExecute(String result) {
-    		Toast.makeText(fragmentActivity, result, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
 	    }		
 	}
 	
