@@ -51,6 +51,7 @@ public class WeiboSectionFragment extends Fragment{
 	@Override
 	public void onPause() {
 		System.out.println("------On Pause-----");
+		new CacheStatusTask().execute(statusList);
 		
 		super.onPause();
 	}
@@ -260,8 +261,14 @@ public class WeiboSectionFragment extends Fragment{
 		protected String doInBackground(
 				List<com.akeng.filteritout.entity.Status>... params) {
 			
+			if(params[0].isEmpty())
+				return null;
+			
 	        DataHelper dataHelper=new DataHelper(getActivity());
-	        for(int i=0;i<params[0].size();i++){
+	        
+	        dataHelper.clearCachedStatus(params[0].get(0).getSection());
+	        
+	        for(int i=0;i<params[0].size()&&i<15;i++){
 			String userId=AccessTokenKeeper.readUserId(getActivity());
 	        dataHelper.addStatus(userId, params[0].get(i), null);
 	        }

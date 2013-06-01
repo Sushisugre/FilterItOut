@@ -6,6 +6,7 @@ public class Status {
 	public static final String USERID="user_id";
 	public static final String KEYS="keys";
 	public static final String TYPE="type";
+	public static final String SECTION="section";
 	public static final String TIME="time";
 	public static final String TEXT="text";
 	public static final String USERNAME="username";
@@ -33,6 +34,7 @@ public class Status {
     private boolean isLike;
     private boolean isDeleted;
     private int type;
+    private int section;
     private double weight;
     
     public Status(){
@@ -166,6 +168,14 @@ public class Status {
 
 	public void setWeight(double weight) {
 		this.weight = weight;
+	}
+
+	public int getSection() {
+		return section;
+	}
+
+	public void setSection(int section) {
+		this.section = section;
 	}
 
 

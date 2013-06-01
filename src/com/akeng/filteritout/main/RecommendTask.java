@@ -67,6 +67,7 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 			for (int i = 0; i < newList.size(); i++) {
 
 				com.akeng.filteritout.entity.Status status = newList.get(i);
+				status.setSection(section);
 				String content = WeiboAnalyzer.cleanUpText(status.getText());
 
 				// filter statuses that are too short

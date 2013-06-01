@@ -209,6 +209,7 @@ public class DataHelper {
 		values.put(Status.THUMB, status.getThumbnailPic());
 		values.put(Status.TIME, status.getTime());
 		values.put(Status.TYPE, status.getType());
+		values.put(Status.SECTION, status.getSection());
 		values.put(Status.USERID, status.getUserId());
 		values.put(Status.USERNAME, status.getUsername());
 		if (status.getRetweetedStatus() != null)
@@ -258,5 +259,48 @@ public class DataHelper {
 	    	int num =  db.delete(SqliteHelper.TB_TAGS, null, null);
 	    	Log.e("Clear All Tags",num+" items deleted");
 	        return num;
+	    }
+	    
+	    public int clearCachedStatus(int section){
+	    	String where=Status.TYPE+"="+Status.NORMAL
+	    			+" and "+Status.SECTION+"="+section;
+	    	int num =  db.delete(SqliteHelper.TB_STATUS, where, null);
+	    	Log.e("Clear cached statuses",num+" items deleted");
+	        return num;
+	    }
+	    
+	    public List<Status> readCachedStatus(int section){
+	    	String where=Status.SECTION+"="+section;
+	        Cursor cursor=db.query(SqliteHelper.TB_STATUS, null, where, null, null, null,null);
+	        
+	        List<Status> cachedStatuses =new ArrayList<Status>();
+	        
+	        if (!cursor.moveToFirst())
+	        	return null;
+	        
+	        while(!cursor.isAfterLast()){
+	        	Status status=new Status();
+	        	status.setId(cursor.getLong(0));
+	        	status.setUserId(cursor.getString(1));
+	        	status.setType(cursor.getInt(3));
+	        	status.setSection(cursor.getInt(4));
+	        	status.setTime(cursor.getString(5));
+	        	status.setText(cursor.getString(6));
+	        	status.setUsername(cursor.getString(7));
+	        	if(!cursor.isNull(8)){
+	        		Status rtStatus=new Status();
+	        		rtStatus.setId(cursor.getLong(8));
+	        		status.setRetweetedStatus(rtStatus);
+	        	}
+	        	status.setMiddlePic(cursor.getString(9));
+	        	status.setThumbnailPic(cursor.getString(10));
+	        	
+	        	cachedStatuses.add(status);
+
+	            cursor.moveToNext();
+	        }
+	        cursor.close();
+	        
+	        return cachedStatuses;
 	    }
 }

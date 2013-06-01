@@ -51,6 +51,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 Status.USERID+" varchar,"+
                 Status.KEYS+" varchar,"+
                 Status.TYPE+" integer,"+
+                Status.SECTION+" integer,"+
                 Status.TIME+" varchar,"+
                 Status.TEXT+" varchar,"+
                 Status.USERNAME+" varchar,"+

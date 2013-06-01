@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ import com.akeng.filteritout.R;
 import com.akeng.filteritout.entity.RecommendParam;
 import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.main.WeiboListView.RefreshListener;
+import com.akeng.filteritout.util.DataHelper;
 import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.net.RequestListener;
@@ -38,8 +40,6 @@ public class HomeActivity extends FragmentActivity implements
 	 */
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
-	public WeiboSectionFragment friendSection;
-	public WeiboSectionFragment recommendSection;
 	private RecommendTask recommentor=null;
 
 	public static List<Status> friendStatusList=new ArrayList<Status>();
@@ -104,17 +104,14 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
+		if(friendStatusList.isEmpty())
+			new ReadCacheStatusTask().execute(SECTION_FRIENDS);
+		if(publicStatusList.isEmpty())
+			new ReadCacheStatusTask().execute(SECTION_RECOMMENDS);
+			
 		super.onResume();
 	}
 
-
-
-	@Override
-	public void onDestroy(){
-		System.out.println("activity - On destroy - ");
-	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -309,6 +306,41 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
+		
+	}
+	
+	private class ReadCacheStatusTask extends AsyncTask<Integer, Void, List<com.akeng.filteritout.entity.Status>>{
+
+		int section;
+		
+		@Override
+		protected List<com.akeng.filteritout.entity.Status> doInBackground(Integer... params) {
+			section=params[0];
+			
+	        DataHelper dataHelper=new DataHelper(HomeActivity.this);
+	        
+	        List<com.akeng.filteritout.entity.Status> cachedStatus=dataHelper.readCachedStatus(section);
+	        
+	        dataHelper.close();
+	        
+			return cachedStatus;
+		}
+
+		@Override
+		protected void onPostExecute(List<com.akeng.filteritout.entity.Status> result) {
+			
+			if(result==null)
+				return;
+			
+			if(SECTION_FRIENDS==section)
+				friendStatusList.addAll(result);
+			if(SECTION_RECOMMENDS==section)
+				publicStatusList.addAll(result);
+			
+			updateSection(section);
+		}
+
+
 		
 	}
 
