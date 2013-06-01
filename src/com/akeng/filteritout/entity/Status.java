@@ -43,7 +43,7 @@ public class Status {
     	this.isDeleted=false;
     	this.type = NORMAL;
     	this.retweetedStatus=null;
-    	this.weight=0;
+    	this.weight=0.0;
     }
     
 	public long getId() {
@@ -160,7 +160,7 @@ public class Status {
 		this.type = type;
 	}
 
-	public double getWeight() {
+	public Double getWeight() {
 		return weight;
 	}
 

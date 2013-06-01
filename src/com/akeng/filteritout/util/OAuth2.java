@@ -18,6 +18,7 @@ import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.api.FavoritesAPI;
 import com.weibo.sdk.android.api.StatusesAPI;
 import com.weibo.sdk.android.api.TagsAPI;
@@ -115,7 +116,7 @@ public class OAuth2 {
     	favoritesAPI.favorites(50, 1, listener);
     }
     
-    public static List<Status> parseResponse(String response){
+    public static List<Status> parseResponse(String response)throws WeiboException{
     	
 		 List<Status> statusList=new ArrayList<Status>();
 		// Log.i("JSON Response", response);
@@ -125,6 +126,8 @@ public class OAuth2 {
     		if(jsonResponse.has("error")){
     			jsonResponse.getString("error");
     			jsonResponse.getInt("error_code");
+    			
+    			throw new WeiboException(jsonResponse.getString("error"),jsonResponse.getInt("error_code"));
     		}
     		
     		
@@ -147,10 +150,6 @@ public class OAuth2 {
                     	retweetedStatus=OAuth2.setStatusInfo(r);
                     	status.setRetweetedStatus(retweetedStatus);
                     }
-
-                    
-                    //Date date=new Date(time);
-                    //time=ConvertTime(date);
 
                     
                     statusList.add(status);
@@ -214,5 +213,6 @@ public class OAuth2 {
   	public static String getUserId() {
   		return AccessTokenKeeper.readUserId(mContext);
   	}
+
 
 }

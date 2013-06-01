@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -146,7 +143,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-		 requestStatus();
+		refreshing(mViewPager.getCurrentItem());
 	}
 
 	@Override
@@ -165,66 +162,52 @@ public class HomeActivity extends FragmentActivity implements
 	@Override
 	public void onComplete(String arg0){
 		
+		int section = mViewPager.getCurrentItem();
 		try {
-			JSONObject jsonResponse = new JSONObject(arg0);
-			// api error
-			if (jsonResponse.has("error")) {
-				final String errorMessage=jsonResponse.getString("error");
-				final String errorCode=jsonResponse.getString("error_code");
-			
-				//toast error message
-				this.runOnUiThread(new Runnable() {
-				     public void run() {
-				    	 Toast.makeText(getApplication(),"Error:"+errorMessage, Toast.LENGTH_SHORT).show();
-				     }
-				});
-			
-				//if token expired, go to authorizeActivity to refresh it
-			if(OAuth2.TOKEN_ERRORS.contains(errorCode)){
-	            Intent intent = new Intent();
-	            intent.setClass(this, AuthorizeActivity.class);
-	            startActivity(intent);
-	            this.finish();
-			}
-				return;
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		int section=mViewPager.getCurrentItem();
-		final List<Status> newList=OAuth2.parseResponse(arg0);
-		
-		
-		if(section==SECTION_FRIENDS){
-			if (newList.size() > 0) {
-				OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? 
-						OAuth2.sinceId: newList.get(0).getId();
-				OAuth2.maxId = OAuth2.maxId < (newList.get(newList.size() - 1).getId() - 1) ?
-						OAuth2.maxId : (newList.get( newList.size() - 1).getId() - 1);
-			}
-		}
+			final List<Status> newList = OAuth2.parseResponse(arg0);
 
-		
-		//construct parameter for recommend task
-		RecommendParam candidates=new RecommendParam();
-		candidates.setSection(section);
-		candidates.setStatus(newList);
-		
-		recommentor=new RecommendTask(this);
-		recommentor.attach(this);
-		recommentor.execute(candidates); 
-		
+			if (section == SECTION_FRIENDS) {
+				if (newList.size() > 0) {
+					OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? OAuth2.sinceId
+							: newList.get(0).getId();
+					OAuth2.maxId = OAuth2.maxId < (newList.get(
+							newList.size() - 1).getId() - 1) ? OAuth2.maxId
+							: (newList.get(newList.size() - 1).getId() - 1);
+				}
+			}
 
+			// construct parameter for recommend task
+			RecommendParam candidates = new RecommendParam();
+			candidates.setSection(section);
+			candidates.setStatus(newList);
+
+			recommentor = new RecommendTask(this);
+			recommentor.attach(this);
+			recommentor.execute(candidates);
+
+		} catch (WeiboException we) {
+			final String errorMessage = we.getMessage();
+			final int errorCode = we.getStatusCode();
+
+			// toast error message
+			this.runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(getApplication(), "Error:" + errorMessage,
+							Toast.LENGTH_SHORT).show();
+				}
+			});
+
+			// if token expired, go to authorizeActivity to refresh it
+			if (OAuth2.TOKEN_ERRORS.contains(errorCode)) {
+				Intent intent = new Intent();
+				intent.setClass(this, AuthorizeActivity.class);
+				startActivity(intent);
+				this.finish();
+			}
+		}
 	}
 	
-	public static void addToList(List<Status> statusList, List<Status> newList) {
-		if (newList.size() > 0) {
-			// returned first id < OAuth2.maxId, earlier status
-			int index = newList.get(0).getId()< OAuth2.maxId ? statusList.size() : 0;
-			statusList.addAll(index, newList);
-		}
-	}
+
 
 	@Override
 	public void onError(WeiboException arg0) {
@@ -252,17 +235,6 @@ public class HomeActivity extends FragmentActivity implements
 	
 	private static String makeFragmentName(int viewId, int index) {
 		return "android:switcher:" + viewId + ":" + index;
-	}
-	
-	
-	public void requestStatus(){
-		
-		if(mViewPager.getCurrentItem()==SECTION_FRIENDS){
-			oauth.requestNewFriendStatus(this);
-		}
-		else if(mViewPager.getCurrentItem()==SECTION_RECOMMENDS){
-			oauth.requestPublicStatus(this);
-		}
 	}
 	
 	public void updateSection(final int section){

@@ -2,6 +2,7 @@ package com.akeng.filteritout.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,8 @@ import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.DataHelper;
+import com.akeng.filteritout.util.OAuth2;
+import com.akeng.filteritout.util.StatusComparator;
 import com.akeng.filteritout.util.WeiboAnalyzer;
 
 public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>> {
@@ -116,6 +119,7 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 			e.printStackTrace();
 		}
 
+		Collections.sort(newList,new StatusComparator());
 		return newList;
 	}
 	
@@ -205,6 +209,19 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 	}
 	
 	/**
+	 * Add filtered new status list to the display list
+	 * @param statusList
+	 * @param newList
+	 */
+	private void addToList(List<com.akeng.filteritout.entity.Status> statusList, List<com.akeng.filteritout.entity.Status> newList) {
+		if (newList.size() > 0) {
+			// returned first id < OAuth2.maxId, earlier status
+			int index = newList.get(0).getId()< OAuth2.maxId ? statusList.size() : 0;
+			statusList.addAll(index, newList);
+		}
+	}
+	
+	/**
 	 * Update Section
 	 */
 	protected void onPostExecute(
@@ -213,10 +230,10 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		//update weibo section
 		
 		if (section == HomeActivity.SECTION_FRIENDS) {
-			HomeActivity.addToList(HomeActivity.friendStatusList, filteredList);
+			addToList(HomeActivity.friendStatusList, filteredList);
 
 		} else if (section == HomeActivity.SECTION_RECOMMENDS) {
-			HomeActivity.addToList(HomeActivity.publicStatusList, filteredList);
+			addToList(HomeActivity.publicStatusList, filteredList);
 		}
 
 		// notify weibosection to update views
@@ -237,13 +254,13 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		}
 		
 		if (newList.size() == 0){
-			Toast.makeText(activity.getApplication(),noStatus+","+filteredNum,
+			Toast.makeText(activity.getApplication(),noStatus+" "+filteredNum,
 					Toast.LENGTH_SHORT).show();
 		}
 		else{
 			Toast.makeText(activity.getApplication(),
 					newList.size() + activity.getString(R.string.new_statuses)+","+filteredNum,
-					3000).show();
+					Toast.LENGTH_SHORT).show();
 			}
 
 	}	

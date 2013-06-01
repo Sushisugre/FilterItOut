@@ -51,6 +51,7 @@ public class WeiboSectionFragment extends Fragment{
 	@Override
 	public void onPause() {
 		System.out.println("------On Pause-----");
+		
 		super.onPause();
 	}
 
