@@ -183,10 +183,23 @@ public class DataHelper {
 	        return hasStatus;
 	    }
 	    
+	
+	public void updateStatusType(long id,int type){
+		String where=Status.ID+"="+id;
+		ContentValues values = new ContentValues();
+		values.put(Status.TYPE, type);
+		db.update(SqliteHelper.TB_STATUS, values, where, null);
+	}
+	    
 	public void addStatus(String userId, Status status, String keys) {
 
-		if(hasStatus(status.getId()))
+		if(hasStatus(status.getId())){
+			updateStatusType(status.getId(),status.getType());
+			Log.e("Update Status",
+					"User id:" + userId + ",Status text:" + status.getText()
+							+ ",Status type:" + status.getType());
 			return;
+		}
 		
 		ContentValues values = new ContentValues();
 		values.put(Status.ID, status.getId());

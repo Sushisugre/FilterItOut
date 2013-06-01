@@ -67,27 +67,27 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				String content = WeiboAnalyzer.cleanUpText(status.getText());
 
 				// filter statuses that are too short
-				if (section == HomeActivity.SECTION_RECOMMENDS) {
-					if (content.length() < 30) {
+				if (content.length() < 40) {
+					if (section == HomeActivity.SECTION_RECOMMENDS) {
 						newList.remove(i);
 						i--;
-						continue;
 					}
+					continue;
 				}
 
-				Map<String, Integer> candidateMap = WeiboAnalyzer
-						.splitStatus(content);
+				Map<String, Integer> candidateMap = WeiboAnalyzer.splitStatus(content);
 			
 				//similarity with dislike status	
-				if (dislikeList != null) {
-					double dislikeWeight = getWeight(dislikeList, candidateMap);
-					if (dislikeWeight > 0.1) {
-						Log.e("dislike weight>0.1", content);
-						newList.remove(i);
-						i--;
-						this.filtered++;
-						continue;
-					}
+				double dislikeWeight=0;
+				if (dislikeList != null) 
+					dislikeWeight = getWeight(dislikeList, candidateMap);
+
+				if (dislikeWeight > 0.1) {
+					Log.e("dislike weight>0.1", content);
+					newList.remove(i);
+					i--;
+					this.filtered++;
+					continue;
 				}
 
 				double likeWeight = 0;

@@ -157,7 +157,7 @@ public class WeiboSectionFragment extends Fragment{
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
 						
-						if(status.isLike())
+						//if(status.isLike())
 							new RecordStatusTask().execute(status);
 
 					}});
@@ -253,6 +253,23 @@ public class WeiboSectionFragment extends Fragment{
 	    }		
 	}
 	
+	private class CacheStatusTask extends AsyncTask<List<Status>, Void, String>{
+
+		@Override
+		protected String doInBackground(
+				List<com.akeng.filteritout.entity.Status>... params) {
+			
+	        DataHelper dataHelper=new DataHelper(getActivity());
+	        for(int i=0;i<params[0].size();i++){
+			String userId=AccessTokenKeeper.readUserId(getActivity());
+	        dataHelper.addStatus(userId, params[0].get(i), null);
+	        }
+	        dataHelper.close();
+	        
+			return null;
+		}
+		
+	}
 	
 
 }
