@@ -140,7 +140,7 @@ public class HomeActivity extends FragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-		refreshing(mViewPager.getCurrentItem());
+		//refreshing(mViewPager.getCurrentItem());
 	}
 
 	@Override
@@ -329,8 +329,10 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		protected void onPostExecute(List<com.akeng.filteritout.entity.Status> result) {
 			
-			if(result==null)
+			if(result==null){
+				refreshing(section);
 				return;
+			}
 			
 			if(SECTION_FRIENDS==section)
 				friendStatusList.addAll(result);

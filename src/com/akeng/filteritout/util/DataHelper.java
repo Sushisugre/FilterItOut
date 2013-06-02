@@ -267,6 +267,7 @@ public class DataHelper {
 		List<Status> cachedStatuses = new ArrayList<Status>();
 
 		if (!cursor.moveToFirst()){
+			System.out.println("Status not found");
 			cursor.close();
 			return null;
 			}
@@ -297,8 +298,9 @@ public class DataHelper {
 	}
 	
 	public int clearCachedStatus(int section) {
-		String where = Status.TYPE + "=" + Status.CACHED +" or "+Status.TYPE + "=" + Status.RETWEET + " and "
-				+ Status.SECTION + "=" + section;
+		String where =Status.SECTION + "=" + section +
+				" and ("+Status.TYPE + "=" + Status.RETWEET + 
+				" or "+Status.TYPE + "=" + Status.CACHED+")" ;
 		int num = db.delete(SqliteHelper.TB_STATUS, where, null);
 		Log.e("Clear cached statuses", num + " items deleted");
 		return num;
