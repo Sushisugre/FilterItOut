@@ -16,6 +16,8 @@ public class Status {
 	public static final int FAVOR = 0;
 	public static final int DISLIKE = 1;
 	public static final int NORMAL = 2;
+	public static final int RETWEET = 3;
+
 	
     private long id;
     private String text;

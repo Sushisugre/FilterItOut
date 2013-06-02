@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -124,6 +126,9 @@ public class WeiboSectionFragment extends Fragment{
 			ImageView statusImage;
 			LikeButton btnLike;
 			ImageButton btnDelete;
+			View retweet;
+			TextView retweetUser;
+			TextView retweetText;
 			
 			Status status = (Status) getItem(position);
 			if(status.isDeleted()==true)
@@ -138,6 +143,7 @@ public class WeiboSectionFragment extends Fragment{
 				statusImage = (ImageView) convertView.findViewById(R.id.wbimage);
 				btnLike = (LikeButton) convertView.findViewById(R.id.btn_like);
 				btnDelete = (ImageButton) convertView.findViewById(R.id.btn_delete);
+
 
 //				StatusHolder viewHolder = new StatusHolder();
 //				viewHolder.username=username;
@@ -201,6 +207,17 @@ public class WeiboSectionFragment extends Fragment{
 			statusText.setText(status.getText());
 			statusTime.setText(status.getTime());
 			btnLike.setChecked(statusList.get(statusPosition).isLike());
+			if(status.getRetweetedStatus()!=null){
+				retweet=View.inflate(parent.getContext(), R.layout.retweet,null); 
+				retweetText=(TextView)retweet.findViewById(R.id.rttext);
+				retweetUser=(TextView)retweet.findViewById(R.id.rtuser);
+				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+				LinearLayout weiboContent=(LinearLayout)convertView.findViewById(R.id.wbcontent);
+				weiboContent.addView(retweet, lp);
+				//((RelativeLayout)convertView).addView(retweet, lp);
+				retweetText.setText(status.getRetweetedStatus().getText());
+				retweetUser.setText(status.getRetweetedStatus().getUsername());
+			}
 
 			return convertView;
 		}

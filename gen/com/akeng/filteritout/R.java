@@ -43,17 +43,18 @@ public final class R {
         public static final int r6=0x7f020014;
         public static final int r7=0x7f020015;
         public static final int r8=0x7f020016;
-        public static final int red=0x7f02001a;
+        public static final int red=0x7f02001b;
         public static final int release_up=0x7f020017;
-        public static final int tag=0x7f020018;
-        public static final int user_default=0x7f020019;
+        public static final int rt=0x7f020018;
+        public static final int tag=0x7f020019;
+        public static final int user_default=0x7f02001a;
     }
     public static final class id {
-        public static final int Msglist=0x7f090020;
+        public static final int Msglist=0x7f090022;
         public static final int add_dislike=0x7f09000b;
         public static final int add_like=0x7f090007;
-        public static final int btn_delete=0x7f09001a;
-        public static final int btn_like=0x7f090019;
+        public static final int btn_delete=0x7f09001c;
+        public static final int btn_like=0x7f09001b;
         public static final int btn_start=0x7f09000e;
         public static final int dislike=0x7f090009;
         public static final int favor=0x7f090005;
@@ -62,9 +63,9 @@ public final class R {
         public static final int layout=0x7f090002;
         public static final int layout_authorize=0x7f090000;
         public static final int layout_tag=0x7f090003;
-        public static final int menu_forgot_password=0x7f090024;
-        public static final int menu_settings=0x7f090022;
-        public static final int menu_tag=0x7f090023;
+        public static final int menu_forgot_password=0x7f090026;
+        public static final int menu_settings=0x7f090024;
+        public static final int menu_tag=0x7f090025;
         public static final int pager=0x7f090001;
         public static final int refresh_list_footer_progressbar=0x7f09000f;
         public static final int refresh_list_footer_text=0x7f090010;
@@ -73,19 +74,21 @@ public final class R {
         public static final int refresh_list_header_pull_down=0x7f090012;
         public static final int refresh_list_header_release_up=0x7f090013;
         public static final int refresh_list_header_text=0x7f090014;
+        public static final int rttext=0x7f090017;
+        public static final int rtuser=0x7f090016;
         public static final int save_tags=0x7f09000c;
-        public static final int tag_name=0x7f090016;
+        public static final int tag_name=0x7f090018;
         public static final int text_dislike=0x7f090008;
         public static final int text_favor=0x7f090004;
         public static final int text_info=0x7f09000d;
-        public static final int toolbarLayout=0x7f090021;
-        public static final int wbbuttons=0x7f090017;
-        public static final int wbcontent=0x7f09001b;
-        public static final int wbicon=0x7f090018;
-        public static final int wbimage=0x7f09001e;
-        public static final int wbtext=0x7f09001f;
-        public static final int wbtime=0x7f09001d;
-        public static final int wbuser=0x7f09001c;
+        public static final int toolbarLayout=0x7f090023;
+        public static final int wbbuttons=0x7f090019;
+        public static final int wbcontent=0x7f09001d;
+        public static final int wbicon=0x7f09001a;
+        public static final int wbimage=0x7f090020;
+        public static final int wbtext=0x7f090021;
+        public static final int wbtime=0x7f09001f;
+        public static final int wbuser=0x7f09001e;
     }
     public static final class layout {
         public static final int activity_authorize=0x7f030000;
@@ -95,9 +98,10 @@ public final class R {
         public static final int dialog=0x7f030004;
         public static final int refresh_list_footer=0x7f030005;
         public static final int refresh_list_header=0x7f030006;
-        public static final int tag=0x7f030007;
-        public static final int weibo=0x7f030008;
-        public static final int weibo_section=0x7f030009;
+        public static final int retweet=0x7f030007;
+        public static final int tag=0x7f030008;
+        public static final int weibo=0x7f030009;
+        public static final int weibo_section=0x7f03000a;
     }
     public static final class menu {
         public static final int activity_authorize=0x7f080000;

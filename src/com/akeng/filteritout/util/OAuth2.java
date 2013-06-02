@@ -148,6 +148,7 @@ public class OAuth2 {
                     if(d.has("retweeted_status")){
                         JSONObject r=d.getJSONObject("retweeted_status");
                     	retweetedStatus=OAuth2.setStatusInfo(r);
+                    	retweetedStatus.setType(Status.RETWEET);
                     	status.setRetweetedStatus(retweetedStatus);
                     }
 
