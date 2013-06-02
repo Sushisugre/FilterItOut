@@ -165,6 +165,10 @@ public class WeiboSectionFragment extends Fragment{
 						boolean isLike=status.isLike();
 						status.setLike(!isLike);
 						
+						if(status.hasRetweetedStatus()){
+							status.getRetweetedStatus().setType(Status.FAVOR+Status.RETWEET);
+						}
+						
 						//if(status.isLike())
 							new RecordStatusTask().execute(status);
 
@@ -176,6 +180,9 @@ public class WeiboSectionFragment extends Fragment{
 						
 						Status status=statusList.get(statusPosition);
 						status.setDeleted(true);
+						if(status.hasRetweetedStatus()){
+							status.getRetweetedStatus().setType(Status.DISLIKE+Status.RETWEET);
+						}
 						
 						new RecordStatusTask().execute(status);
 						
@@ -242,8 +249,14 @@ public class WeiboSectionFragment extends Fragment{
 				com.akeng.filteritout.entity.Status... raw) {
 			
 				String keys="";
+				String text;
+				if(raw[0].getRetweetedStatus()==null)
+					text=raw[0].getText();
+				else
+					text=raw[0].getRetweetedStatus().getText();
+				
 			try{
-				String content=WeiboAnalyzer.cleanUpText(raw[0].getText());
+				String content=WeiboAnalyzer.cleanUpText(text);
 		        Map<String,Integer> keyMap=WeiboAnalyzer.splitStatus(content);
 		      
 		        Iterator<String> it=keyMap.keySet().iterator();

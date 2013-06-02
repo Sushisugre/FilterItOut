@@ -13,9 +13,9 @@ public class Status {
 	public static final String PICTURE="picture";
 	public static final String THUMB="thumb";
 	public static final String RETWEETED="rt_id";
-	public static final int FAVOR = 0;
-	public static final int DISLIKE = 1;
-	public static final int NORMAL = 2;
+	public static final int FAVOR = 1;
+	public static final int DISLIKE = 2;
+	public static final int CACHED = 0;
 	public static final int RETWEET = 3;
 
 	
@@ -45,7 +45,7 @@ public class Status {
     	this.middlePic="";
     	this.isLike=false;
     	this.isDeleted=false;
-    	this.type = NORMAL;
+    	this.type = CACHED;
     	this.retweetedStatus=null;
     	this.weight=0.0;
     }
@@ -128,6 +128,10 @@ public class Status {
 	public void setAttitudesCount(int attitudesCount) {
 		this.attitudesCount = attitudesCount;
 	}
+	
+	public boolean hasRetweetedStatus(){
+		return retweetedStatus==null?false:true;
+	}
 	public Status getRetweetedStatus() {
 		return retweetedStatus;
 	}
@@ -144,7 +148,7 @@ public class Status {
 		if(isLike)
 			this.type=FAVOR;
 		else
-			this.type=NORMAL;
+			this.type=CACHED;
 	}
 
 	public boolean isDeleted() {
