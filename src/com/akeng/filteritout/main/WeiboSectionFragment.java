@@ -303,6 +303,8 @@ public class WeiboSectionFragment extends Fragment{
 			if(params[0].isEmpty())
 				return null;
 			
+			
+			
 	        DataHelper dataHelper=new DataHelper(getActivity());
 	        
 	        dataHelper.clearCachedStatus(params[0].get(0).getSection());

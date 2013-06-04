@@ -160,8 +160,12 @@ public class DataHelper {
 			Map<String, Integer> keyMap = new HashMap<String, Integer>();
 
 			String keyString = cursor.getString(2);
-			if(keyString==null)
-				return null;
+			if(keyString==null){
+				cursor.moveToNext();
+				continue;
+			}
+			
+				
 			
 			String[] TF = keyString.split(",");
 			for (String term : TF) {
@@ -219,17 +223,19 @@ public class DataHelper {
 		return status;
 	}
 
-	public void updateStatusType(long id, int type) {
+	public void updateStatus(long id, int type,String keys) {
 		String where = Status.ID + "=" + id;
 		ContentValues values = new ContentValues();
 		values.put(Status.TYPE, type);
+		if(keys!=null)
+			values.put(Status.KEYS, keys);
 		db.update(SqliteHelper.TB_STATUS, values, where, null);
 	}
 
 	public void addStatus(String userId, Status status, String keys) {
 
 		if (hasStatus(status.getId())) {
-			updateStatusType(status.getId(), status.getType());
+			updateStatus(status.getId(), status.getType(),keys);
 			Log.e("Update Status", "User id:" + userId + ",Status text:"
 					+ status.getText() + ",Status type:" + status.getType());
 			return;

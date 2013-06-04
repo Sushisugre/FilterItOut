@@ -19,7 +19,6 @@ import com.akeng.filteritout.entity.Status;
 import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.util.AccessTokenKeeper;
 import com.akeng.filteritout.util.DataHelper;
-import com.akeng.filteritout.util.OAuth2;
 import com.akeng.filteritout.util.StatusComparator;
 import com.akeng.filteritout.util.WeiboAnalyzer;
 
@@ -55,8 +54,8 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 
 		// get model
 		DataHelper dataHelper = new DataHelper(activity);
-		List<Map<String, Integer>> likeList = dataHelper.getModels(Tag.FAVOR);
-		List<Map<String, Integer>> dislikeList = dataHelper.getModels(Tag.DISLIKE);
+		List<Map<String, Integer>> likeList = dataHelper.getModels(com.akeng.filteritout.entity.Status.FAVOR);
+		List<Map<String, Integer>> dislikeList = dataHelper.getModels(com.akeng.filteritout.entity.Status.DISLIKE);
 		dataHelper.close();
 
 		//get tags
@@ -99,6 +98,11 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				double likeWeight = 0;
 				if (likeList != null)
 					likeWeight = getWeight(likeList, candidateMap);
+				else
+					Log.e("like weight", "like list == null");
+					Log.e("like weight", "weight:"+likeWeight);
+					
+
 
 				if (section == HomeActivity.SECTION_RECOMMENDS) {
 					if (likeWeight < 0.1) {
@@ -161,7 +165,6 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 			double sim=getSimilarity(candidate, model);
 			statusWeight = statusWeight>sim? statusWeight:sim;
 		}
-		System.out.println(statusWeight);
 		return statusWeight;
 	}
 	
