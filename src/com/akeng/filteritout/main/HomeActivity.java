@@ -159,7 +159,8 @@ public class HomeActivity extends FragmentActivity implements
 	@Override
 	public void onComplete(String arg0){
 		
-		int section = mViewPager.getCurrentItem();
+		int section;
+		
 		try {
 			final List<Status> newList = OAuth2.parseResponse(arg0);
 			
@@ -167,23 +168,37 @@ public class HomeActivity extends FragmentActivity implements
 				section=SECTION_RECOMMENDS;
 			else
 				section=SECTION_FRIENDS;
-
+			
+			boolean isNew=false;
 			if (section == SECTION_FRIENDS) {
 				if (newList.size() > 0) {
-					OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? OAuth2.sinceId
-							: newList.get(0).getId();
+					
+					if(OAuth2.sinceId > newList.get(0).getId())
+						isNew=false;
+					else{
+						isNew=true;
+						OAuth2.sinceId=newList.get(0).getId();
+					}
+					
+//					OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? OAuth2.sinceId
+//							: newList.get(0).getId();
+					
 					OAuth2.maxId = OAuth2.maxId < (newList.get(
-							newList.size() - 1).getId() - 1) ? OAuth2.maxId
-							: (newList.get(newList.size() - 1).getId() - 1);
+							newList.size() - 1).getId() ) ? OAuth2.maxId
+							: (newList.get(newList.size() - 1).getId() - 1)-1;
+					
+					if(OAuth2.maxId==0)
+						OAuth2.maxId=(newList.get(newList.size() - 1).getId() )-1;
+
 				}
 			}
-
+			
 			// construct parameter for recommend task
 			RecommendParam candidates = new RecommendParam();
 			candidates.setSection(section);
 			candidates.setStatus(newList);
 
-			recommentor = new RecommendTask(this);
+			recommentor = new RecommendTask(this,isNew);
 			recommentor.attach(this);
 			recommentor.execute(candidates);
 

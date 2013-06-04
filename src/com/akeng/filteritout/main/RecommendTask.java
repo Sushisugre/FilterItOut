@@ -30,10 +30,12 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 	List<String> dislikeTags;
 	int section;
 	int filtered;
+	boolean isNew;
 	
-	public RecommendTask(HomeActivity activity){
+	public RecommendTask(HomeActivity activity,boolean isNew){
 		this.activity=activity;
 		this.filtered=0;
+		this.isNew=isNew;
 	}
 
     void detach() {
@@ -217,8 +219,9 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 	private void addToList(List<com.akeng.filteritout.entity.Status> statusList, List<com.akeng.filteritout.entity.Status> newList) {
 		if (newList.size() > 0) {
 			// returned first id < OAuth2.maxId, earlier status
-			int index = newList.get(0).getId()< OAuth2.maxId ? statusList.size() : 0;
+			int index=isNew==true?0:statusList.size();
 			statusList.addAll(index, newList);
+			
 		}
 	}
 	

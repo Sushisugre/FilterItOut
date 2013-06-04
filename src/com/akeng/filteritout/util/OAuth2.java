@@ -178,8 +178,6 @@ public class OAuth2 {
             	status.setThumbnailPic(obj.getString("thumbnail_pic"));
             	status.setMiddlePic(obj.getString("bmiddle_pic"));
               
-            	//Log.e("thumbnail_pic", obj.getString("thumbnail_pic"));
-                //Log.e("bmiddle_pic",obj.getString("bmiddle_pic"));
             }
             
             status.setId(obj.getLong("id"));
