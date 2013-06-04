@@ -213,7 +213,7 @@ public class HomeActivity extends FragmentActivity implements
 		if(arg0.getStatusCode()==-1)
 			info="无法连接服务器，请检查网络";
 		else{
-			info="错误代码："+arg0.getStatusCode();
+			info="错误："+arg0.getStatusCode()+","+arg0.getMessage();
 		}
 		
 		final String message=info;
@@ -313,6 +313,7 @@ public class HomeActivity extends FragmentActivity implements
 
 		int section;
 		
+		
 		@Override
 		protected List<com.akeng.filteritout.entity.Status> doInBackground(Integer... params) {
 			section=params[0];
@@ -330,13 +331,14 @@ public class HomeActivity extends FragmentActivity implements
 		protected void onPostExecute(List<com.akeng.filteritout.entity.Status> result) {
 			
 			if(result==null){
-				refreshing(section);
+				if(section==SECTION_FRIENDS)
+					refreshing(section);
 				return;
 			}
 			
-			if(SECTION_FRIENDS==section)
+			if(section==SECTION_FRIENDS)
 				friendStatusList.addAll(result);
-			if(SECTION_RECOMMENDS==section)
+			if(section==SECTION_RECOMMENDS)
 				publicStatusList.addAll(result);
 			
 			updateSection(section);

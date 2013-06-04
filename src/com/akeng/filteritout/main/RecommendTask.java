@@ -114,12 +114,12 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				}
 
 				status.setWeight(likeWeight);
+				candidateMap=null;
 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		Collections.sort(newList,new StatusComparator());
 		return newList;
 	}

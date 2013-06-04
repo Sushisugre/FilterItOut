@@ -129,6 +129,8 @@ public class WeiboSectionFragment extends Fragment{
 			View retweet;
 			TextView retweetUser;
 			TextView retweetText;
+			ImageView retweetImage;
+
 			
 			Status status = (Status) getItem(position);
 			if(status.isDeleted()==true)
@@ -224,8 +226,15 @@ public class WeiboSectionFragment extends Fragment{
 				//((RelativeLayout)convertView).addView(retweet, lp);
 				retweetText.setText(status.getRetweetedStatus().getText());
 				retweetUser.setText(status.getRetweetedStatus().getUsername());
+				if(status.getRetweetedStatus().getThumbnailPic()!=null){
+					retweetImage=(ImageView)retweet.findViewById(R.id.rtimage);
+					retweetImage.setImageResource(R.drawable.placeholder);
+				}
 			}
-
+			if(status.getThumbnailPic()!=null){
+				statusImage.setImageResource(R.drawable.placeholder);
+			}
+			
 			return convertView;
 		}
 

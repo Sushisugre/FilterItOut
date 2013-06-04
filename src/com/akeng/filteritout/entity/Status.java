@@ -41,8 +41,8 @@ public class Status {
     
     public Status(){
     	this.haveImage=false;
-    	this.thumbnailPic="";
-    	this.middlePic="";
+    	this.thumbnailPic=null;
+    	this.middlePic=null;
     	this.isLike=false;
     	this.isDeleted=false;
     	this.type = CACHED;
