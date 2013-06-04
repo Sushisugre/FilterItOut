@@ -162,6 +162,11 @@ public class HomeActivity extends FragmentActivity implements
 		int section = mViewPager.getCurrentItem();
 		try {
 			final List<Status> newList = OAuth2.parseResponse(arg0);
+			
+			if(newList.size()>15)
+				section=SECTION_RECOMMENDS;
+			else
+				section=SECTION_FRIENDS;
 
 			if (section == SECTION_FRIENDS) {
 				if (newList.size() > 0) {
@@ -331,7 +336,7 @@ public class HomeActivity extends FragmentActivity implements
 		protected void onPostExecute(List<com.akeng.filteritout.entity.Status> result) {
 			
 			if(result==null){
-				if(section==SECTION_FRIENDS)
+			//	if(section==SECTION_FRIENDS)
 					refreshing(section);
 				return;
 			}

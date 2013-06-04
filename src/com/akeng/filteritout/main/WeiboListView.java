@@ -74,7 +74,7 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	        mHeaderLinearLayout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.refresh_list_header, null);
 	        addHeaderView(mHeaderLinearLayout);
 	        mHeaderTextView = (TextView) findViewById(R.id.refresh_list_header_text);
-	        mHeaderUpdateText = (TextView) findViewById(R.id.refresh_list_header_last_update);
+	       // mHeaderUpdateText = (TextView) findViewById(R.id.refresh_list_header_last_update);
 	        mHeaderPullDownImageView = (ImageView) findViewById(R.id.refresh_list_header_pull_down);
 	        mHeaderReleaseDownImageView = (ImageView) findViewById(R.id.refresh_list_header_release_up);
 	        mHeaderProgressBar = (ProgressBar) findViewById(R.id.refresh_list_header_progressbar);
@@ -97,14 +97,17 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	        });
 	 
 	        setOnScrollListener(this);
+	        setSelection(2);
 	        setSelectionAfterHeaderView();
 	        measureView(mHeaderLinearLayout);
 	        mHeaderHeight = mHeaderLinearLayout.getMeasuredHeight();
 	 
 	        //TODO last refresh
 	        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-	        mHeaderUpdateText.setText(context.getString(R.string.last_update, mSimpleDateFormat.format(new Date())));
-	    }
+	    //    mHeaderUpdateText.setText(context.getString(R.string.last_update, mSimpleDateFormat.format(new Date())));
+	   //     mHeaderUpdateText.setText(context.getString(R.string.last_update)+ mSimpleDateFormat.format(new Date()));
+  
+	   }
 
 
 	    public void setRefreshListener(RefreshListener mRefreshListener) {
@@ -272,8 +275,8 @@ public class WeiboListView extends ListView implements OnScrollListener{
 	                mHeaderProgressBar.setVisibility(View.INVISIBLE);
 	                mHeaderPullDownImageView.setVisibility(View.VISIBLE);
 	                mHeaderReleaseDownImageView.setVisibility(View.GONE);
-	                mHeaderUpdateText.setText(getContext().getString(R.string.last_update,
-	                        mSimpleDateFormat.format(new Date())));
+//	                mHeaderUpdateText.setText(getContext().getString(R.string.last_update)+
+//	                        mSimpleDateFormat.format(new Date()));
 	                mHeaderLinearLayout.setPadding(mHeaderLinearLayout.getPaddingLeft(),
 	                        0,
 	                        mHeaderLinearLayout.getPaddingRight(),

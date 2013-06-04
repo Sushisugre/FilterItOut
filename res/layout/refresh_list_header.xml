@@ -34,7 +34,7 @@
             android:textColor="#192F06"
             android:paddingTop="8dip"
             android:text="@string/pull_down_to_update"/>
-        <TextView android:id="@+id/refresh_list_header_last_update"
+<!--         <TextView android:id="@+id/refresh_list_header_last_update"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -42,7 +42,7 @@
             android:textSize="12sp"
             android:textColor="#192F06"
             android:paddingBottom="8dip"
-            android:text="@string/last_update"/>
+            android:text="@string/last_update"/> -->
     </RelativeLayout>
 
 </LinearLayout>
