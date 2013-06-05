@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import android.content.Context;
 
 import com.akeng.filteritout.entity.Status;
+import com.akeng.filteritout.entity.Tag;
 import com.akeng.filteritout.listener.AuthDialogListener;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
@@ -99,6 +101,7 @@ public class OAuth2 {
      * @param listener
      */
     public void requestUserTags(RequestListener listener){
+    	tagsAPI= new TagsAPI(AccessTokenKeeper.readAccessToken(mContext));
 		tagsAPI.tags(Long.parseLong(getUserId()), 20, 1, listener);
     }
     /**
@@ -114,6 +117,32 @@ public class OAuth2 {
      */
     public void requestFavorites(RequestListener listener){
     	favoritesAPI.favorites(50, 1, listener);
+    }
+    
+    public static List<Tag> parseTag(String response){
+    	List<Tag> tagList=new ArrayList<Tag>();
+    	
+    	try{
+        	JSONArray jsonArray=new JSONArray(response);
+        	for(int i=0;i<jsonArray.length();i++){
+        		JSONObject object=jsonArray.getJSONObject(i);
+        		Iterator<String> it=object.keys();
+        		while(it.hasNext()){
+        			String key=it.next();
+        			if(!key.equals("weight")){
+        				Tag tag=new Tag();
+        				tag.setTagName(object.getString(key));
+        				tag.setType(Tag.FAVOR);
+        				tagList.add(tag);
+        			}
+        		}
+        	}
+    	}
+    	catch(JSONException e){
+    		e.printStackTrace();
+    	}
+    	
+    	return tagList;
     }
     
     public static List<Status> parseResponse(String response)throws WeiboException{
@@ -135,7 +164,6 @@ public class OAuth2 {
         	for(int i=0;i<data.length();i++)
             {
                 JSONObject d=data.getJSONObject(i);
-               // Log.i("JSON Object", d.toString());
                 if(d!=null){
                 	
                 	if(d.has("advertises")){

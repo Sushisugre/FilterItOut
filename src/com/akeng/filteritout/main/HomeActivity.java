@@ -105,8 +105,8 @@ public class HomeActivity extends FragmentActivity implements
 		if(publicStatusList.isEmpty())
 			new ReadCacheStatusTask().execute(SECTION_RECOMMENDS);
 		
-		this.refreshing(SECTION_FRIENDS);
-		this.refreshing(SECTION_RECOMMENDS);
+//		this.refreshing(SECTION_FRIENDS);
+//		this.refreshing(SECTION_RECOMMENDS);
 			
 		super.onResume();
 	}
@@ -339,7 +339,6 @@ public class HomeActivity extends FragmentActivity implements
 	private class ReadCacheStatusTask extends AsyncTask<Integer, Void, List<com.akeng.filteritout.entity.Status>>{
 
 		int section;
-		
 		
 		@Override
 		protected List<com.akeng.filteritout.entity.Status> doInBackground(Integer... params) {

@@ -17,6 +17,20 @@ public class AccessTokenKeeper {
 	 * @param context Activity 上下文环境
 	 * @param token Oauth2AccessToken
 	 */
+	
+	public static void setFisrtTimeConfigured(Context context){
+		SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+		Editor editor = pref.edit();
+		editor.putBoolean("isConfigured", true);
+		editor.commit();
+	}
+	
+	public static boolean isConfigured(Context context){
+		SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+		return pref.getBoolean("isConfigured", false);
+	}
+	
+	
 	public static void keepAccessToken(Context context, Oauth2AccessToken token,String uid) {
 		SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
 		Editor editor = pref.edit();
