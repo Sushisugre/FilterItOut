@@ -35,7 +35,6 @@ public class AuthDialogListener implements WeiboAuthListener {
         	Toast.makeText(context, "认证成功", Toast.LENGTH_SHORT)
                     .show();
             
-          //TODO: database?  
             UserInfo user=new UserInfo();
             user.setUserId(user_id);
             user.setToken(token);
