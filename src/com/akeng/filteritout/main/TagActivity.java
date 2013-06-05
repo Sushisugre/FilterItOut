@@ -210,15 +210,6 @@ public class TagActivity extends Activity implements RequestListener{
 	        	tags=dislikeTags;
 	        
 		   int tagNum=tags.size();	
-
-	        //add some default category
-//	        if(Tag.FAVOR==type&&tagNum<4){
-//	        	for(String cat:categories){
-//	        		if(!tags.contains(cat))
-//	        			tags.add(new Tag(cat,Tag.FAVOR));
-//	        	}
-//	        		
-//	        }
 	        
 	        if(Tag.DISLIKE==type&&tagNum==0){
 	        	tags.add(new Tag("中奖",Tag.DISLIKE));

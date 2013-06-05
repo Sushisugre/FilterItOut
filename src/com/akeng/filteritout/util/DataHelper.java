@@ -201,7 +201,12 @@ public class DataHelper {
 		if(cursor.moveToFirst()){
 			status.setId(cursor.getLong(0));
 			status.setUserId(cursor.getString(1));
-			status.setType(cursor.getInt(3));
+			int type=cursor.getInt(3);
+			status.setType(type);
+			if(type==Status.FAVOR)
+				status.setLike(true);
+			else if(type==Status.DISLIKE)
+				status.setDeleted(true);
 			status.setSection(cursor.getInt(4));
 			status.setTime(cursor.getString(5));
 			status.setText(cursor.getString(6));

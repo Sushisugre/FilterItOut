@@ -66,10 +66,8 @@ public class OAuth2 {
     	if(listener==null){
     		listener= new AuthDialogListener(mContext);
     	}
-		System.out.println("request access token");
 
     		mWeibo.authorize(mContext, listener);
-    	
     }
     
     public void refreshAccessToken(){

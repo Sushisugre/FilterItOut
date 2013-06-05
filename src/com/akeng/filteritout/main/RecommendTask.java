@@ -101,21 +101,22 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 				else
 					Log.e("like weight", "like list == null");
 					Log.e("like weight", "weight:"+likeWeight);
-					
+				
+				if (containTag(likeTags, content)) {
+					if(likeList==null||likeList.size()<5)
+						likeWeight = 0.2;
+					else
+						likeWeight=likeWeight*1.5;
+				}
 
 
 				if (section == HomeActivity.SECTION_RECOMMENDS) {
 					if (likeWeight < 0.1) {
 
-						if (containTag(likeTags, content)) {
-							likeWeight = 0.2;
-						} else {
 							Log.e("like weight<0.1", content);
 							 newList.remove(i);
 							 i--;
 							 continue;
-						}
-
 					}
 				}
 
@@ -266,7 +267,7 @@ public class RecommendTask extends AsyncTask<RecommendParam, Void, List<Status>>
 		}
 		else{
 			Toast.makeText(activity.getApplication(),
-					newList.size() + activity.getString(R.string.new_statuses)+","+filteredNum,
+					newList.size() + activity.getString(R.string.new_statuses)+" "+filteredNum,
 					Toast.LENGTH_SHORT).show();
 			}
 
