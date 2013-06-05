@@ -50,6 +50,8 @@ public class HomeActivity extends FragmentActivity implements
 	public static final String ARG_SECTION_TYPE = "section_type";
 	public static final int SECTION_FRIENDS = 0;
 	public static final int SECTION_RECOMMENDS = 1;
+	boolean friendIsNew=true;
+	boolean recommendIsNew=true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +96,6 @@ public class HomeActivity extends FragmentActivity implements
 	
 	
 	
-	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-	}
-
 
 
 	@Override
@@ -108,6 +104,9 @@ public class HomeActivity extends FragmentActivity implements
 			new ReadCacheStatusTask().execute(SECTION_FRIENDS);
 		if(publicStatusList.isEmpty())
 			new ReadCacheStatusTask().execute(SECTION_RECOMMENDS);
+		
+		this.refreshing(SECTION_FRIENDS);
+		this.refreshing(SECTION_RECOMMENDS);
 			
 		super.onResume();
 	}
@@ -173,15 +172,12 @@ public class HomeActivity extends FragmentActivity implements
 			if (section == SECTION_FRIENDS) {
 				if (newList.size() > 0) {
 					
-					if(OAuth2.sinceId > newList.get(0).getId())
-						isNew=false;
-					else{
-						isNew=true;
+					isNew=friendIsNew;
+					
+					if(OAuth2.sinceId < newList.get(0).getId()){
 						OAuth2.sinceId=newList.get(0).getId();
 					}
-					
-//					OAuth2.sinceId = OAuth2.sinceId > newList.get(0).getId() ? OAuth2.sinceId
-//							: newList.get(0).getId();
+
 					
 					OAuth2.maxId = OAuth2.maxId < (newList.get(
 							newList.size() - 1).getId() ) ? OAuth2.maxId
@@ -189,8 +185,11 @@ public class HomeActivity extends FragmentActivity implements
 					
 					if(OAuth2.maxId==0)
 						OAuth2.maxId=(newList.get(newList.size() - 1).getId() )-1;
-
 				}
+			}
+			
+			if(section == SECTION_RECOMMENDS){
+				isNew=recommendIsNew;
 			}
 			
 			// construct parameter for recommend task
@@ -271,10 +270,14 @@ public class HomeActivity extends FragmentActivity implements
 	 */
 	@Override
 	public void refreshing(int section) {
-		if(section==SECTION_FRIENDS)
+		if(section==SECTION_FRIENDS){
 			oauth.requestNewFriendStatus(this);
-		if(section==SECTION_RECOMMENDS)
+			friendIsNew=true;
+		}
+		if(section==SECTION_RECOMMENDS){
 			oauth.requestPublicStatus(this);
+			recommendIsNew=true;
+		}
 	}
 
 	@Override
@@ -283,10 +286,14 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	public void more(int section) {
-		if(section==SECTION_FRIENDS)
+		if(section==SECTION_FRIENDS){
 			oauth.requestEarlierFriendStatus(this);
-		if(section==SECTION_RECOMMENDS)
+			friendIsNew=false;
+		}
+		if(section==SECTION_RECOMMENDS){
 			oauth.requestPublicStatus(this);
+			recommendIsNew=false;
+		}
 	}
 	
 	  
@@ -320,9 +327,9 @@ public class HomeActivity extends FragmentActivity implements
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case 0:
-				return getString(R.string.title_section_attention).toUpperCase();
+				return getString(R.string.title_section_attention);
 			case 1:
-				return getString(R.string.title_section_recommend).toUpperCase();
+				return getString(R.string.title_section_recommend);
 			}
 			return null;
 		}

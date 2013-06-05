@@ -43,7 +43,6 @@ public class WeiboSectionFragment extends Fragment{
 
 	@Override
 	public void onResume() {
-		System.out.println("------On Resume-----");
 		updateList();
 		super.onResume();
 	}
@@ -52,9 +51,7 @@ public class WeiboSectionFragment extends Fragment{
 
 	@Override
 	public void onPause() {
-		System.out.println("------On Pause-----");
 		new CacheStatusTask().execute(statusList);
-		
 		super.onPause();
 	}
 

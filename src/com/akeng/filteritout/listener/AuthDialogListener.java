@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.akeng.filteritout.entity.UserInfo;
-import com.akeng.filteritout.main.HomeActivity;
+import com.akeng.filteritout.main.TagActivity;
 import com.akeng.filteritout.util.DataHelper;
 import com.akeng.filteritout.util.OAuth2;
 import com.weibo.sdk.android.Oauth2AccessToken;
@@ -57,7 +57,8 @@ public class AuthDialogListener implements WeiboAuthListener {
             
             //to homepage
             Intent intent = new Intent();
-            intent.setClass(context, HomeActivity.class);
+          //  intent.setClass(context, HomeActivity.class);
+            intent.setClass(context, TagActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }

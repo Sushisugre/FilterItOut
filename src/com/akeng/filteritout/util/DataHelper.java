@@ -225,6 +225,9 @@ public class DataHelper {
 
 	public void updateStatus(long id, int type,String keys) {
 		String where = Status.ID + "=" + id;
+		if(type==Status.CACHED)
+			return;
+		
 		ContentValues values = new ContentValues();
 		values.put(Status.TYPE, type);
 		if(keys!=null)
